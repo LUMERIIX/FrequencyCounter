@@ -1,0 +1,7 @@
+Varianten des Eingangschaltkreises:
+
+Komparator zum Wandeln der Spannungsform ==> Rechteck ==> Geschwindigkeit
+Schmitt_trigger zum Schalten ==> Geschwindigkeit
+Verstärker ==> kleine Eingangssignale garantieren
+FET ==> zum Schalten logic level anpassen ==> geschwindigkeit
+Schutzschaltung

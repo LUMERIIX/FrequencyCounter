@@ -1,0 +1,17 @@
+Frequenzzählverfahren
+
+Direktes Zählverfahren:
+Timebase öffnet Gate und Zähler erhöht bei jeder pos. oder neg. Flanke des messenden Signals.
+Nur für schnelle Signale sonst benötigt es lange Gatezeiten. Asynchronfehler durch zufälliges schalten des Gates.
+
+Periodendauermessung:
+Das zu messende Signal steuert das Tor und ein hoher Referenzclock (10MHz) dient als Zählimpuls des Counters.
+Nur für langsame Signale da ansonsten der Referenzclock zu hoch gewählt werden muss.
+Asynchronfehler durch zufälliges schalten des Gates (nicht zwingend relevant bei genug schnellem Referenzclock)
+
+Reziprokzähler:
+2x Zähler; 2xGate; Kombination der zwei gennanten Methoden
+Mit der pos. oder neg. Flanke des Messsignals werden beide Gates synchron geöffnet und beginnen zu zählen.
+Der Referenzclock bleibt asynchron zur Gatezeit Fehler bleibt jedoch klein. Gates schliessen bei einer pos. oder neg. Flanken (gleiche wie geöffnet)
+wieder, dadurch erhält man ganze Perioden (vielfache) des Messsignals. 
+Riesiger Messbereich ==> wird durch gewählte Komponenten bestimmt.
