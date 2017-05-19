@@ -14,14 +14,16 @@ Requirements&Specification --- Frequencycounter
 
 
 Notizen:
--2 Kanäle zur Bereichsabdekung
+-2 Kanäle zur Bereichsabdekung		
 -einstellbare GateZeit
--Abschwächer für Signal
 
 Mögliche Timebases:
 -SXOCXOH
 -SCOCXOWT
 -MX-060 ==>Pv sehr hoch
+-OX-501 ==>Pv max 0.9W
+-PX-501
+-815-A02JY1A
 
 
 
