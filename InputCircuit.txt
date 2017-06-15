@@ -5,3 +5,10 @@ Schmitt_trigger zum Schalten ==> Geschwindigkeit
 Verstärker ==> kleine Eingangssignale garantieren
 FET ==> zum Schalten logic level anpassen ==> geschwindigkeit
 Schutzschaltung
+
+
+
+Bauteile:
+MC12093		Prescaler /2,/4,/8
+MAX9202 	Highspeed Comparator
+LTC6752		Highspeed Comparator

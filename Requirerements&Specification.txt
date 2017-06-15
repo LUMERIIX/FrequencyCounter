@@ -5,7 +5,8 @@ Requirements&Specification --- Frequencycounter
 -Timebase Anschlussmöglichkeit: 	ext. Referenz 		
 -FPGA Clock: 						100 - 300MHz						//evtl. mit PLL von Timebase
 -Eingangsspannungsbereich: 			20mV - 5VRMS
--Signalübertragung DEVICE-PC: 		UART 								//FT2232
+-Signalübertragung DEVICE-PC: 		UART / JTAG							//FT2232
+-DAC mit Speicher:					Kontroll Spannung OCXO				//Aus FOM
 -Quarz UART/USB: 					8MHz,12MHz							//seperater Quarz zum Betrieb der Schnittstelle
 -Frequenzanzeige: 					Frequencycounter GUI
 -Timebase intern: 					kalibrierbarer TCXO, OCXO			//10MHz
@@ -13,19 +14,18 @@ Requirements&Specification --- Frequencycounter
 -Spannungsregler:					3.3V								//Versogrungsspannung FPGA
 
 
-Notizen:
--2 Kanäle zur Bereichsabdekung		
--einstellbare GateZeit
+Notizen:	
+-Frequnezteiler x8
+-Mehrere Eingänge
 
 Mögliche Timebases:
 -SXOCXOH
 -SCOCXOWT
--MX-060 ==>Pv sehr hoch
--OX-501 ==>Pv max 0.9W
 -PX-501
--815-A02JY1A
+-815-A0CJY1-100MHz														//Fav. 60USD
 
+DAC:
+-124153
 
-
-
- 
+FPGA | CPLD:
+SPARTAN 6 																//TQFP 
