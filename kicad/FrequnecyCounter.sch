@@ -1,0 +1,295 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:74xgxx
+LIBS:ac-dc
+LIBS:actel
+LIBS:allegro
+LIBS:Altera
+LIBS:analog_devices
+LIBS:battery_management
+LIBS:bbd
+LIBS:bosch
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:dc-dc
+LIBS:diode
+LIBS:elec-unifil
+LIBS:ESD_Protection
+LIBS:ftdi
+LIBS:gennum
+LIBS:graphic_symbols
+LIBS:hc11
+LIBS:infineon
+LIBS:intersil
+LIBS:ir
+LIBS:Lattice
+LIBS:leds
+LIBS:LEM
+LIBS:maxim
+LIBS:mechanical
+LIBS:microchip_dspic33dsc
+LIBS:microchip_pic10mcu
+LIBS:microchip_pic12mcu
+LIBS:microchip_pic16mcu
+LIBS:microchip_pic18mcu
+LIBS:microchip_pic24mcu
+LIBS:microchip_pic32mcu
+LIBS:modules
+LIBS:motor_drivers
+LIBS:motors
+LIBS:msp430
+LIBS:nordicsemi
+LIBS:nxp
+LIBS:nxp_armmcu
+LIBS:onsemi
+LIBS:Oscillators
+LIBS:Power_Management
+LIBS:powerint
+LIBS:pspice
+LIBS:references
+LIBS:relays
+LIBS:rfcom
+LIBS:RFSolutions
+LIBS:sensors
+LIBS:silabs
+LIBS:stm8
+LIBS:stm32
+LIBS:supertex
+LIBS:switches
+LIBS:transf
+LIBS:triac_thyristor
+LIBS:ttl_ieee
+LIBS:video
+LIBS:wiznet
+LIBS:Worldsemi
+LIBS:Xicor
+LIBS:zetex
+LIBS:Zilog
+LIBS:74lvc
+LIBS:altera
+LIBS:barrel_jack
+LIBS:battery
+LIBS:beaglebone_black
+LIBS:ck
+LIBS:conn_power
+LIBS:conn_rf
+LIBS:conn_rj
+LIBS:crystal
+LIBS:ddr2_sdram_sodimm
+LIBS:epcos
+LIBS:epcos_dcc6c
+LIBS:fbead
+LIBS:fiducial
+LIBS:freescale_mcu
+LIBS:hackrf_expansion
+LIBS:hdmi
+LIBS:header
+LIBS:hirose
+LIBS:hole
+LIBS:io_expander
+LIBS:lcd_kingtech
+LIBS:ltc
+LIBS:microphone
+LIBS:minicircuits
+LIBS:molex
+LIBS:mosfet
+LIBS:newhaven
+LIBS:noritake
+LIBS:nxp_micro
+LIBS:on_cat24c256
+LIBS:on_semi
+LIBS:osc
+LIBS:passive
+LIBS:r_sense
+LIBS:regulator
+LIBS:rf_antenna
+LIBS:rf_lna
+LIBS:samtec
+LIBS:sd
+LIBS:sharebrained
+LIBS:supply
+LIBS:switch
+LIBS:terminal_block
+LIBS:ti
+LIBS:ti_cc
+LIBS:tp
+LIBS:trs_jack
+LIBS:usb3_esd_son50-10
+LIBS:usb3_micro_ab
+LIBS:wolfson
+LIBS:FrequnecyCounter-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 5
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Sheet
+S 1525 3225 950  1775
+U 595D114F
+F0 "Power_Supply" 60
+F1 "Power_Supply.sch" 60
+F2 "~RESET" O L 1525 3775 60 
+$EndSheet
+$Sheet
+S 5650 3075 1725 2800
+U 595E0A92
+F0 "FPGA" 60
+F1 "FPGA.sch" 60
+F2 "Ext_Ref_Clk" I L 5650 3275 60 
+F3 "Clk_A" I L 5650 3550 60 
+F4 "Clk_B" I L 5650 3800 60 
+F5 "EN_CHA_FILTA" O R 7375 3275 60 
+F6 "EN_CHA_FILTB" O R 7375 3525 60 
+F7 "EN_CHB_FILTA" O R 7375 3775 60 
+F8 "EN_CHB_FILTB" O R 7375 4025 60 
+F9 "TCK" I L 5650 4050 60 
+F10 "TDI" I L 5650 4300 60 
+F11 "TDO" O L 5650 4575 60 
+F12 "TMS" I L 5650 4825 60 
+F13 "RXD" I L 5650 5100 60 
+F14 "TXD" O L 5650 5325 60 
+$EndSheet
+$Sheet
+S 1525 950  950  2025
+U 595D12D5
+F0 "USB_JTAG" 60
+F1 "USB_JTAG.sch" 60
+F2 "TCK" O R 2475 1225 60 
+F3 "TDI" I R 2475 1725 60 
+F4 "TDO" O R 2475 1475 60 
+F5 "TMS" O R 2475 1975 60 
+F6 "~RESET" I L 1525 1625 60 
+F7 "TXD" O R 2475 2375 60 
+F8 "RXD" I R 2475 2600 60 
+$EndSheet
+$Sheet
+S 8325 3075 1725 1950
+U 595DF15C
+F0 "Signal_Input" 60
+F1 "Signal_Input.sch" 60
+F2 "Ext_Ref_Clk" O R 10050 3250 60 
+F3 "Clk_A" O R 10050 3475 60 
+F4 "Clk_B" O R 10050 3725 60 
+F5 "CHA_FILTA" I L 8325 3275 60 
+F6 "CHA_FILTB" I L 8325 3525 60 
+F7 "CHB_FILTA" I L 8325 3775 60 
+F8 "CHB_FILTB" I L 8325 4025 60 
+$EndSheet
+Wire Wire Line
+	7375 4025 8325 4025
+Wire Wire Line
+	7375 3775 8325 3775
+Wire Wire Line
+	7375 3525 8325 3525
+Wire Wire Line
+	7375 3275 8325 3275
+Wire Wire Line
+	5650 3275 5200 3275
+Wire Wire Line
+	5200 3275 5200 2675
+Wire Wire Line
+	5200 2675 10250 2675
+Wire Wire Line
+	10250 2675 10250 3250
+Wire Wire Line
+	10250 3250 10050 3250
+Wire Wire Line
+	10050 3475 10375 3475
+Wire Wire Line
+	10375 3475 10375 2525
+Wire Wire Line
+	10375 2525 5050 2525
+Wire Wire Line
+	5050 2525 5050 3550
+Wire Wire Line
+	5050 3550 5650 3550
+Wire Wire Line
+	5650 3800 4900 3800
+Wire Wire Line
+	4900 3800 4900 2375
+Wire Wire Line
+	4900 2375 10500 2375
+Wire Wire Line
+	10500 2375 10500 3725
+Wire Wire Line
+	10500 3725 10050 3725
+Wire Wire Line
+	4600 4050 5650 4050
+Wire Wire Line
+	4275 4300 5650 4300
+Wire Wire Line
+	4275 1475 4275 4300
+Wire Wire Line
+	3950 1725 3950 4575
+Wire Wire Line
+	3950 4575 5650 4575
+Wire Wire Line
+	3650 1975 3650 4825
+Wire Wire Line
+	3650 4825 5650 4825
+Wire Wire Line
+	1200 1625 1200 3775
+Wire Wire Line
+	1200 3775 1525 3775
+Wire Wire Line
+	1200 1625 1525 1625
+Wire Wire Line
+	2475 1975 3650 1975
+Wire Wire Line
+	2475 1725 3950 1725
+Wire Wire Line
+	2475 1475 4275 1475
+Wire Wire Line
+	2475 1225 4600 1225
+Wire Wire Line
+	4600 1225 4600 4050
+Wire Wire Line
+	2475 2375 3325 2375
+Wire Wire Line
+	3325 2375 3325 5100
+Wire Wire Line
+	3325 5100 5650 5100
+Wire Wire Line
+	2475 2600 3025 2600
+Wire Wire Line
+	3025 2600 3025 5325
+Wire Wire Line
+	3025 5325 5650 5325
+$EndSCHEMATC
