@@ -4,7 +4,7 @@ Requirements&Specification --- Frequencycounter
 -Speisung: 							USB (Typ. B) => 	5V				
 -Timebase Anschlussmöglichkeit: 	ext. Referenz 		
 -FPGA Clock: 						100 - 300MHz						//evtl. mit PLL von Timebase
--Eingangsspannungsbereich: 			20mV - 5VRMS
+-Eingangsspannungsbereich: 			20mVpp - 5Vpp
 -Signalübertragung DEVICE-PC: 		UART / JTAG							//FT2232
 -DAC mit Speicher:					Kontroll Spannung OCXO				//Aus FOM
 -Quarz UART/USB: 					8MHz,12MHz							//seperater Quarz zum Betrieb der Schnittstelle
