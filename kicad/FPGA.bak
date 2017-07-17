@@ -1900,4 +1900,6 @@ Connection ~ 4200 1750
 Wire Wire Line
 	4400 1675 4400 1850
 Connection ~ 4400 1850
+NoConn ~ 8900 3850
+NoConn ~ 8900 3950
 $EndSCHEMATC

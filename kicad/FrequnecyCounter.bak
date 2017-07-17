@@ -293,45 +293,45 @@ Wire Wire Line
 Wire Wire Line
 	3025 5325 5650 5325
 $Comp
-L Mounting_Hole MK?
+L Mounting_Hole MK1
 U 1 1 596D53D7
 P 1050 7250
-F 0 "MK?" H 1050 7450 50  0000 C CNN
+F 0 "MK1" H 1050 7450 50  0000 C CNN
 F 1 "Mounting_Hole" H 1050 7375 50  0000 C CNN
-F 2 "" H 1050 7250 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_ISO7380" H 1050 7250 50  0001 C CNN
 F 3 "" H 1050 7250 50  0001 C CNN
 	1    1050 7250
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mounting_Hole MK?
+L Mounting_Hole MK3
 U 1 1 596D5D24
 P 1050 7575
-F 0 "MK?" H 1050 7775 50  0000 C CNN
+F 0 "MK3" H 1050 7775 50  0000 C CNN
 F 1 "Mounting_Hole" H 1050 7700 50  0000 C CNN
-F 2 "" H 1050 7575 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_ISO7380" H 1050 7575 50  0001 C CNN
 F 3 "" H 1050 7575 50  0001 C CNN
 	1    1050 7575
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mounting_Hole MK?
+L Mounting_Hole MK2
 U 1 1 596D626D
 P 1600 7250
-F 0 "MK?" H 1600 7450 50  0000 C CNN
+F 0 "MK2" H 1600 7450 50  0000 C CNN
 F 1 "Mounting_Hole" H 1600 7375 50  0000 C CNN
-F 2 "" H 1600 7250 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_ISO7380" H 1600 7250 50  0001 C CNN
 F 3 "" H 1600 7250 50  0001 C CNN
 	1    1600 7250
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mounting_Hole MK?
+L Mounting_Hole MK4
 U 1 1 596D6346
 P 1600 7575
-F 0 "MK?" H 1600 7775 50  0000 C CNN
+F 0 "MK4" H 1600 7775 50  0000 C CNN
 F 1 "Mounting_Hole" H 1600 7700 50  0000 C CNN
-F 2 "" H 1600 7575 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_ISO7380" H 1600 7575 50  0001 C CNN
 F 3 "" H 1600 7575 50  0001 C CNN
 	1    1600 7575
 	1    0    0    -1  
