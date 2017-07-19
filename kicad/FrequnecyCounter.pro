@@ -1,4 +1,4 @@
-update=11.07.2017 12:38:27
+update=19.07.2017 08:41:06
 version=1
 last_client=kicad
 [cvpcb]
@@ -186,8 +186,6 @@ LibName175=library-kicad-master/trs_jack
 LibName176=library-kicad-master/usb3_esd_son50-10
 LibName177=library-kicad-master/usb3_micro_ab
 LibName178=library-kicad-master/wolfson
-[general]
-version=1
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -207,3 +205,5 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
+[general]
+version=1
