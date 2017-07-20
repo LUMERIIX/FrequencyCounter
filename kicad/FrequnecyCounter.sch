@@ -151,12 +151,12 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 5
-Title ""
-Date ""
-Rev ""
-Comp ""
-Comment1 ""
-Comment2 ""
+Title "FrequnecyCounter"
+Date "2017-07-19"
+Rev "01"
+Comp "COMLAB"
+Comment1 "Author: Lukas Jenni"
+Comment2 "Review: "
 Comment3 ""
 Comment4 ""
 $EndDescr

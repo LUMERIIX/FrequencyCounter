@@ -120,6 +120,16 @@ D power-flag symbol +3.3V
 K Power Flag Symbol
 $ENDCMP
 #
+$CMP +3V3_FPGA
+D power-flag symbol +3.3V_FPGA
+K Power Flag Symbol
+$ENDCMP
+#
+$CMP +3V6
+D power-flag symbol +3.6V
+K Power Flag Symbol
+$ENDCMP
+#
 $CMP +3V8
 D power-flag symbol +3.8V
 K Power Flag Symbol
