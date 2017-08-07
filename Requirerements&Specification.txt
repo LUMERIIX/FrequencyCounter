@@ -13,19 +13,7 @@ Requirements&Specification --- Frequencycounter
 -Leistungsaufnahme:					max. 2.5W
 -Spannungsregler:					3.3V								//Versogrungsspannung FPGA
 
-
-Notizen:	
--Frequnezteiler x8
--Mehrere Eingänge
-
-Mögliche Timebases:
--SXOCXOH
--SCOCXOWT
--PX-501
--815-A0CJY1-100MHz														//Fav. 60USD
-
-DAC:
--124153
-
-FPGA | CPLD:
-SPARTAN 6 																//TQFP 
+Eingänge:
+Channel A			=> 1mHz - 50MHz
+Channel B			=> 50MHz - 1GHz
+Channel Ext. Ref
