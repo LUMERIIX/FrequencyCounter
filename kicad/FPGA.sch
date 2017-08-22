@@ -933,7 +933,6 @@ F 3 "" H 1400 6275 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 NoConn ~ 3825 4325
-NoConn ~ 3825 4425
 NoConn ~ 3825 4725
 NoConn ~ 8900 4700
 NoConn ~ 6250 4400
@@ -1124,9 +1123,9 @@ F 3 "" H 7475 3150 50  0001 C CNN
 	1    7475 3150
 	1    0    0    -1  
 $EndComp
-Text HLabel 4650 4625 2    60   Input ~ 0
+Text HLabel 4650 4450 2    60   Input ~ 0
 RXD
-Text HLabel 4650 4525 2    60   Output ~ 0
+Text HLabel 4650 4350 2    60   Output ~ 0
 TXD
 $Comp
 L xc6slx9_144 xc6slx9_1
@@ -1139,8 +1138,6 @@ F 3 "" H 3650 4975 60  0001 C CNN
 	2    3425 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4650 4525 3825 4525
 Wire Wire Line
 	6600 3300 6600 3500
 Wire Wire Line
@@ -1155,8 +1152,6 @@ Wire Wire Line
 Connection ~ 6325 3950
 Wire Wire Line
 	6325 4950 6250 4950
-Wire Wire Line
-	3825 4625 4650 4625
 $Comp
 L LED D3
 U 1 1 596F8787
@@ -1539,7 +1534,6 @@ Wire Wire Line
 NoConn ~ 6250 3750
 NoConn ~ 6250 4450
 NoConn ~ 3825 4275
-NoConn ~ 3825 4375
 NoConn ~ 3825 4575
 $Comp
 L R R8
@@ -2149,4 +2143,18 @@ Wire Wire Line
 	3500 6750 3500 6725
 Wire Wire Line
 	3800 6750 3800 6725
+NoConn ~ 3825 4625
+NoConn ~ 3825 4525
+Wire Wire Line
+	4650 4350 4525 4350
+Wire Wire Line
+	4525 4350 4525 4375
+Wire Wire Line
+	4525 4375 3825 4375
+Wire Wire Line
+	3825 4425 4525 4425
+Wire Wire Line
+	4525 4425 4525 4450
+Wire Wire Line
+	4525 4450 4650 4450
 $EndSCHEMATC
