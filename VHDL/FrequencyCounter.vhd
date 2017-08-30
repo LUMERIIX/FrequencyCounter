@@ -17,7 +17,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
+--use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity FrequencyCounter is 
@@ -94,7 +95,7 @@ begin
 	port map(
 		CLK => MEAS_CLK_s,
 		ENABLE => OpenGate_s,
-		TEST => TEST,
+		TEST => open,
 		DataValid => DataValidMeas_s,
 		RESET => RESET,
 		DATA => MeasCountVal

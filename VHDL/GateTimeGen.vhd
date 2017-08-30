@@ -17,7 +17,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
+--use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity GateTimeGen is 
@@ -33,7 +34,7 @@ entity GateTimeGen is
 		);
 end GateTimeGen;
 
-architecture structure of GateTimeGen is
+architecture Behavioral of GateTimeGen is
 
 	signal Count_s : unsigned (30 downto 0);
 	signal GatePulse_s : std_logic;
@@ -53,7 +54,7 @@ begin
 			if GateReady_s = '1' and Valid_s = '0'  then
 				GatePulse_s <= '1';
 				if Count_s = to_unsigned(CountLimit_s, Count_s'length) then
-					Count_s <= 0;
+					Count_s <= to_unsigned(0,Count_s'length);
 					GatePulse_s <= '0';
 					Valid_s <= '1'; 
 				else
@@ -66,4 +67,4 @@ begin
 			end if;
 		end if;
 	end process;
-end architecture structure;
+end Behavioral;

@@ -17,8 +17,9 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
+--use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity GateTime is 
 	generic(
@@ -79,7 +80,7 @@ begin
 	if rising_edge (CLK) then
 		case TimeVal_s is
 		when "00"   => CountLimit_s <= (CLK_OCXO/100);
-		when "01"   => CountLimit_s <= (CLK_OCXO/100);
+		when "01"   => CountLimit_s <= (CLK_OCXO/10);
 		when "10"   => CountLimit_s <= (CLK_OCXO);
 		when others => CountLimit_s <= (CLK_OCXO*10);
 		end case;

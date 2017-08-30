@@ -5,6 +5,7 @@
 -- Create Date:    11:38:06 07/21/2017 
 -- Design Name: 
 -- Module Name: FrequnecyCounterTop   
+
 -- Project Name: FrequnecyCounter
 -- Target Devices: iCE40 
 -- Tool versions: 
@@ -13,11 +14,11 @@
 -- Revision: 
 -- Revision 0.01 - File Created
 -- Additional Comments: 
---
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
+--use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity FrequnecyCounterTop is
@@ -25,10 +26,10 @@ entity FrequnecyCounterTop is
 		CLK_OCXO : integer := 1000000
 	);
 	port ( 
-		REF_CLK 		: in STD_LOGIC;
-		CLK_A			: in STD_LOGIC;
-		CLK_B			: in STD_LOGIC;
-		EXT_REF_CLK 	: in STD_LOGIC;
+		IntRefClk 		: in STD_LOGIC;
+		ClkA			: in STD_LOGIC;
+		ClkB			: in STD_LOGIC;
+		ExtRefClk 		: in STD_LOGIC;
 		ENABLE_EXT_REF	: in STD_LOGIC;
 		LED2			: out STD_LOGIC;
 		MEAS_OUT		: out STD_LOGIC;
@@ -47,8 +48,8 @@ entity FrequnecyCounterTop is
 		ALWAYSON		: out STD_LOGIC;
 		uart_rx			: in STD_LOGIC;
 		uart_tx			: out STD_LOGIC;
-		TimeVal_out		: out STD_LOGIC_VECTOR(1 downto 0)
-		--DATAOUT_Process	: out unsigned (23 downto 0)
+		MeasClkSelect   : in STD_LOGIC;
+		RefClkSelect	: in STD_LOGIC
 		);	
 end FrequnecyCounterTop;
 
@@ -77,10 +78,10 @@ architecture structure of FrequnecyCounterTop is
 		port(
 			CLK 			: in STD_LOGIC;
 			TimeVal			: in STD_LOGIC_VECTOR (1 downto 0);
-			Testsig			: out STD_LOGIC;
+			--Testsig			: out STD_LOGIC;
 			GatePulse		: out STD_LOGIC;
 			GateReady		: in STD_LOGIC;
-			DataValid 		: out STD_LOGIC;
+			--DataValid 		: out STD_LOGIC;
 			Valid			: out STD_LOGIC
 		);
 	end component GateTime;
@@ -95,49 +96,51 @@ architecture structure of FrequnecyCounterTop is
 			MeasCountVal : in unsigned (13 downto 0);
 			DataValid : in STD_LOGIC;
 			CounterReset : out STD_LOGIC;
-			--Test : out STD_LOGIC;
-			DATOUT : out std_logic_vector (27 downto 0)
+			Data8bit : out std_logic_vector(7 downto 0);
+			Valid : out std_logic;
+			DATOUT : out std_logic_vector (33 downto 0)
 		);
 	end component DataProcessing;
-	
-	-- component UART is 
-		-- port(
-			-- clk			: in std_logic;
-			-- reset		: in std_logic;
-			-- uart_tx 	: out std_logic;
-			-- uart_rx		: in std_logic
-		-- );
+
+	-- component ChannelSelector is
+	-- port (
+		-- IntRefClk 		: in STD_LOGIC;
+		-- ClkA			: in STD_LOGIC;
+		-- ClkB			: in STD_LOGIC;
+		-- ExtRefClk	 	: in STD_LOGIC;
+		-- MeasureClk		: out STD_LOGIC;
+		-- RefClkSelect	: in STD_LOGIC;
+		-- MeasClkSelect	: in STD_LOGIC;
+		-- RefClk			: out STD_LOGIC
+	-- );
 	-- end component;
-	component t_serial is
+
+	component uart is 
 		port(
-			sys_clk: in std_logic; -- 100 MHz system clock
-	  
-			led : out std_logic_vector(7 downto 0);
-			uart_rx : in std_logic;
-			uart_tx : out std_logic;
-			Data_TX : in unsigned(33 downto 0);
-	  
-			pmod_1 : out std_logic; -- debug outputs
-			pmod_2 : out std_logic;
-	  
-			reset_btn : in std_logic
+			clk			:	IN		STD_LOGIC;										--system clock
+			reset_n		:	IN		STD_LOGIC;										--ascynchronous reset
+			tx_ena		:	IN		STD_LOGIC;										--initiate transmission
+			tx_data		:	IN		STD_LOGIC_VECTOR(7 DOWNTO 0);  					--data to transmit
+			rx			:	IN		STD_LOGIC;										--receive pin
+			rx_busy		:	OUT		STD_LOGIC;										--data reception in progress
+			rx_error	:	OUT		STD_LOGIC;										--start, parity, or stop bit error detected
+			rx_data		:	OUT		STD_LOGIC_VECTOR(7 DOWNTO 0);					--data received
+			tx_busy		:	OUT		STD_LOGIC;  									--transmission in progress
+			tx			:	OUT		STD_LOGIC										--transmit pin	
 		);
 	end component;
 	
-	signal ClkA_s : std_logic;
+	--signal ClkA_s : std_logic;
 	--signal ClkB_s : std_logic;
-	signal ClkRef_s : std_logic;
+	signal RefClk_s : std_logic;
 	--signal ExtRef_s : std_logic;
-	-- signal Count_s : unsigned (7 downto 0);
-	-- signal Count2_s : unsigned (7 downto 0);
 	signal GatePulse_s : std_logic;
-	signal Measure_Clock_s : std_logic;
+	signal MeasureClock_s : std_logic;
 	signal RefCountVal_s : unsigned (13 downto 0);
 	signal MeasCountVal_s : unsigned (13 downto 0);
 	signal GateReady_s : std_logic;
-	signal DATOUT_s : unsigned (33 downto 0);
+	signal DATOUT_s : std_logic_vector(33 downto 0);
 	signal TimeVal_s : std_logic_vector (1 downto 0);
-	--signal GlockGen_s : std_logic;
 	signal Startmeas_s : std_logic;
 	signal Valid_s : std_logic;
 	signal GateEnable_s : std_logic;
@@ -148,44 +151,46 @@ architecture structure of FrequnecyCounterTop is
 	signal test		: std_logic;
 	signal DataValid_s : std_logic;
 	signal CounterReset_s : std_logic;
+	signal rx_busy_s : std_logic;
+	signal tx_busy_s : std_logic;	
+	signal rx_error_s : std_logic;
+	signal Count2_s : unsigned (19 downto 0);
+    signal reset_s	: std_logic;
+	signal rx_data_s : std_logic_vector(7 downto 0);
+	signal uart_tx_s : std_logic;
+	signal Data8bit_s : std_logic_vector(7 downto 0);
+	signal txValid_s : std_logic;
+	signal tx_data_s : std_logic_vector(33 downto 0);
+	signal test_s : std_logic;
 	--signal OpenGate_s : STD_LOGIC;
 begin
 	Startmeas_s <= STARTMEAS;
-	LED1 <= '1';
+	LED1 <= GatePulse_s;
 	ALWAYSON <= '1';
-	--DATAOUT_Process <= DATOUT_s;
-	ClkRef_s <= REF_CLK;
 	TimeVal_s <= TimeVal;
-	Measure_Clock_s <= CLK_A;
-	TimeVal_out <= TimeVal_s;
+		RefClk_s <= ExtRefClk;
+	--MeasureClock_s <= ClkA;
 
-	MEAS_OUT <= Measure_Clock_s;
-	TP0 <= test;	
-	TP3 <= CounterReset_s;
-	--TP2 <= test1;
+	MEAS_OUT <= MeasureClock_s;
+	TP0 <= txValid_s;	
+	TP3 <= test_s;
+	TP2 <= GatePulse_s;
 	TP1 <= DataValid_s;
+	TP4 <= GateEnable_s;
 	LED4 <= GatePulse_s;
-	CLKOUT <= ClkRef_s;
+	CLKOUT <= RefClk_s;
 	TP5 <= GateReady_s;
 	--LED2 <= test1;
 	LED3 <= test;
+	uart_tx <= not uart_tx_s;
+	--tx_data_s <= std_logic_vector(DATOUT_s);
 	
-	-- Control : process (DATOUT_s) begin
-		-- if rising_edge (ClkRef_s) then
-			-- if DATOUT_s >= to_unsigned(333000, DATOUT_s'length) then
-				-- test <= '1';
-			-- elsif DATOUT_s = to_unsigned(0, DATOUT_s'length) then
-				-- test <= '0';
-			-- end if;
-		-- end if;
-	-- end process;
-		
 	Timing : component GateTime
 	generic map(
 		CLK_OCXO => CLK_OCXO
 	)
 	port map(
-		CLK => ClkRef_s,
+		CLK => RefClk_s,
 		TimeVal => TimeVal_s,
 		GatePulse => GatePulse_s,
 		--Testsig => TP4,
@@ -193,20 +198,10 @@ begin
 		Valid => Valid_s
 	);
 	
-	-- Divider : process (Measure_Clock_s) begin
-		-- if rising_edge(Measure_Clock_s) then
-			-- if Count2_s = to_unsigned(337, Count2_s'length) then --1kHz signal
-                -- Count2_s <= 0;
-                 -- GlockGen_s <= not GlockGen_s;
-            -- else
-                -- Count2_s <= Count2_s +1;
-            -- end if;
-        -- end if;
-    -- end process;
-	
-	Start : process (Startmeas_s) begin
-		if rising_edge (Startmeas_s) and GateReady_s = '0' then
+	Start : process (RefClk_s) begin
+		if Startmeas_s = '1' and GateReady_s = '0' then
 			GateEnable_s <= '1';
+			--test_s <= '1';
 		end if;
 		if GateReady_s = '1' then
 			GateEnable_s <= '0';
@@ -215,14 +210,14 @@ begin
 		
 	FreqCount : component FrequencyCounter
 	port map(
-		CLK => ClkRef_s,
-		MEAS_CLK => Measure_Clock_s,
+		CLK => RefClk_s,
+		MEAS_CLK => MeasureClock_s,
 		GateEnable => GateEnable_s,
 		GatePulse => GatePulse_s,
 		RefCountVal => RefCountVal_s,
 		DataValid => DataValid_s,
 		RESET => CounterReset_s,
-		TEST => TP2,
+		TEST => open,
 		MeasCountVal => MeasCountVal_s,
 		OpenGate => GateReady_s,
 		Valid => Valid_s
@@ -233,26 +228,60 @@ begin
 		CLK_OCXO => CLK_OCXO
 	)
 	port map(
-		CLK => ClkRef_s,
+		CLK => RefClk_s,
 		RefCountVal => RefCountVal_s,
 		MeasCountVal => MeasCountVal_s,
 		DataValid =>DataValid_s,
 		CounterReset => CounterReset_s,
-		--Test => TP2,
+		Valid => txValid_s,
+		Data8bit => Data8bit_s,
 		DATOUT => DATOUT_s
 	);	
-	
-	UART : component t_serial
-	port map(
-		sys_clk => ClkRef_s,  
-		led => LedDbg_s,
-		Data_TX => open,
-		uart_rx => uart_rx,
-		uart_tx => uart_tx, 
-		pmod_1 => debug1_s,
-		pmod_2 => debug2_s,
-		reset_btn => '1'
-	);
 
+	-- ChannelSelect : component ChannelSelector
+	-- port map(
+		-- IntRefClk 		=> IntRefClk,
+		-- ClkA			=> ClkA,
+		-- ClkB			=> ClkB,
+		-- ExtRefClk	 	=> ExtRefClk,
+		-- MeasureClk		=> MeasureClock_s,
+		-- RefClkSelect	=> RefClkSelect,
+		-- MeasClkSelect	=> MeasClkSelect,
+		-- RefClk			=> RefClk_s
+	-- );
+
+	reset : process (ClkA) begin
+		if rising_edge(ClkA) then
+				if Count2_s = to_unsigned(16000, Count2_s'length) then --1kHz signal
+					Count2_s <= to_unsigned(0,Count2_s'length);
+					MeasureClock_s <= not MeasureClock_s;
+				else
+					Count2_s <= Count2_s +1;
+				end if;
+			end if;
+    end process;
 	
+	DataTransfer : component uart
+	port map(
+		clk		 => RefClk_s,
+		reset_n	 => '1',
+		tx_ena	 =>  txValid_s,
+		tx_data	 => Data8bit_s,
+		rx		 => uart_rx,
+		rx_busy	 => rx_busy_s,
+		rx_error => rx_error_s,
+		rx_data	 => open,
+		tx_busy	 => tx_busy_s,
+		tx		 => uart_tx_s
+	);
+	
+	-- datatest : process (RefClk_s) begin
+		-- if rising_edge(RefClk_s) then
+			-- if rx_data_s > "00000000" then
+				-- TP4 <= '1';
+			-- else 
+				-- TP4 <= '0';
+			-- end if;
+		-- end if;
+	-- end process;
 end architecture structure;
