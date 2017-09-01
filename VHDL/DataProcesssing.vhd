@@ -32,8 +32,8 @@ entity DataProcessing is
 		MeasCountVal : in unsigned; --(13 downto 0);
 		CounterReset : out STD_LOGIC;
 		DataValid : in STD_LOGIC;
-		Data8bit : out std_logic_vector(7 downto 0);
 		Valid : out std_logic;
+		TEST : out std_logic;
 		DataOut : out std_logic_vector (7 downto 0);--(33 downto 0)
 		DataIn : in std_logic_vector (7 downto 0)--(33 downto 0)
 		);
@@ -51,14 +51,15 @@ architecture structure of DataProcessing is
 		DataIn : in std_logic_vector(7 downto 0);
 		
 		RawDataIn	: out std_logic_vector;
-		RawDataOut : in std_logic_vector
+		RawDataOut : in std_logic_vector;
+		TEST 		: out std_logic
 	);
-	end component;
+	end component DataController;
 	
 	component Processor is
 	generic (
 		CLK_OCXO : integer 
-	)
+	);
 	port (
 		CLK : in STD_LOGIC;
 		DataValid : in STD_LOGIC;
@@ -66,25 +67,25 @@ architecture structure of DataProcessing is
 		RefCountVal : in unsigned;
 		CounterReset : out  STD_LOGIC;
 		Valid : out STD_LOGIC;
-		RawDataOut : out STD_LOGIC
+		RawDataOut : out STD_LOGIC_VECTOR;
+		DataControllerEnable : out std_logic
 	);
-	end component;
+	end component Processor;
 	
-	signal RefCountVal_s : unsigned (13 downto 0);
-	signal MeasCountVal_s : unsigned (13 downto 0);
+--	signal RefCountVal_s : unsigned (13 downto 0);
+--	signal MeasCountVal_s : unsigned (13 downto 0);
 	signal CounterReset_s : std_logic;
-	signal RawDatOut_s : std_logic_vector;
-	signal RawDatIn_s : std_logic_vector;
-	signal Ready_s : std_logic;
-	signal Checkbit : std_logic;
-	signal test : unsigned (7 downto 0);
+	signal RawDataOut_s : std_logic_vector ((MeasCountVal'length+20)-1 downto 0);
+	signal RawDataIn_s : std_logic_vector (RawDataOut_s'length-1 downto 0);
+	signal Valid_s : std_logic;
+	signal DataControllerEnable_s : std_logic;
+	--signal DataValid_s : std_logic;
 begin
 	CounterReset <= CounterReset_s;
-	RawDataOut <= RawDatOut_s;
-	
+	Valid <= Valid_s;
 
 	
-	Calculate : component processor 
+	Calculate : component Processor 
 		generic map (
 			CLK_OCXO => CLK_OCXO
 		)
@@ -94,19 +95,21 @@ begin
 			MeasCountVal    => MeasCountVal,
 			RefCountVal     => RefCountVal,
 			CounterReset    => CounterReset_s,
-			Valid           => Valid,
-			RawDataOut		=> RawDatOut_s,
+			Valid           => Valid_s,
+			RawDataOut		=> RawDataOut_s,
+			DataControllerEnable => DataControllerEnable_s
 		);
-	Control : component DataController 
+		
+	Control : component DataController
 		port map(
 			CLK        => CLK,
 			RST        => '1',
-			ce         => CounterReset_s,
+			ce         => DataControllerEnable_s,
 			DataOut    => open,
-			DataIn     => open,
-			RawDataIn  => RawDatIn_s,
-			RawDataOut => RawDatOut_s,
-		
+			DataIn     => (others => '0'),
+			RawDataIn  => RawDataIn_s,
+			RawDataOut => RawDataOut_s,
+			TEST 	   => TEST
 		);
 	
 	

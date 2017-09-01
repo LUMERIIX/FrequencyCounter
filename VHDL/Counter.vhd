@@ -1,4 +1,3 @@
-----------------------------------------------------------------------------------
 -- Company: 
 -- Engineer: LJ
 -- 
@@ -28,7 +27,7 @@ entity Counter is
 		TEST		: out STD_LOGIC;
 		DataValid	: out STD_LOGIC;
 		RESET		: in STD_LOGIC;
-		DATA		: out unsigned (13 downto 0)
+		DATA		: out unsigned 
 		);
 end Counter;
 
@@ -47,12 +46,10 @@ begin
 		if rising_edge(CLK) then
 			if ENABLE = '1' then
 				Count_s <= Count_s + 1;
-			else
+				--DataValid_s <= '0';
+			elsif ENABLE = '0' and Count_s > to_unsigned(0,Count_s'length) then
 				DataValid_s <= '1';
 			end if;
-			-- if Count_s >= to_unsigned(3400,Count_s'length) then
-				-- TEST <= '1';
-			-- end if;
 		end if;
 	else
 		Count_s <= (others => '0');

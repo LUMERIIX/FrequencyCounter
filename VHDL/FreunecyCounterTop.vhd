@@ -92,13 +92,15 @@ architecture structure of FrequnecyCounterTop is
 		);
 		port(
 			CLK : in STD_LOGIC;
-			RefCountVal : in unsigned (13 downto 0);
-			MeasCountVal : in unsigned (13 downto 0);
+			RefCountVal : in unsigned;
+			MeasCountVal : in unsigned ;
 			DataValid : in STD_LOGIC;
 			CounterReset : out STD_LOGIC;
-			Data8bit : out std_logic_vector(7 downto 0);
+			--Data8bit : out std_logic_vector(7 downto 0);
 			Valid : out std_logic;
-			DATOUT : out std_logic_vector (33 downto 0)
+			TEST : out std_logic;
+			DataOut : out std_logic_vector (7 downto 0);--(33 downto 0)
+         	DataIn : in std_logic_vector (7 downto 0)--(33 downto 0)
 		);
 	end component DataProcessing;
 
@@ -160,7 +162,8 @@ architecture structure of FrequnecyCounterTop is
 	signal uart_tx_s : std_logic;
 	signal Data8bit_s : std_logic_vector(7 downto 0);
 	signal txValid_s : std_logic;
-	signal tx_data_s : std_logic_vector(33 downto 0);
+	signal TxData_s : std_logic_vector(7 downto 0);
+	signal RxData_s : std_logic_vector(7 downto 0);
 	signal test_s : std_logic;
 	--signal OpenGate_s : STD_LOGIC;
 begin
@@ -173,10 +176,10 @@ begin
 
 	MEAS_OUT <= MeasureClock_s;
 	TP0 <= txValid_s;	
-	TP3 <= test_s;
+	--TP3 <= Valid_s;
 	TP2 <= GatePulse_s;
 	TP1 <= DataValid_s;
-	TP4 <= GateEnable_s;
+	TP4 <= CounterReset_s;
 	LED4 <= GatePulse_s;
 	CLKOUT <= RefClk_s;
 	TP5 <= GateReady_s;
@@ -232,10 +235,11 @@ begin
 		RefCountVal => RefCountVal_s,
 		MeasCountVal => MeasCountVal_s,
 		DataValid =>DataValid_s,
+		TEST => TP3,
 		CounterReset => CounterReset_s,
 		Valid => txValid_s,
-		Data8bit => Data8bit_s,
-		DATOUT => DATOUT_s
+		DataOut => TxData_s,
+     	DataIn => RxData_s
 	);	
 
 	-- ChannelSelect : component ChannelSelector
@@ -266,22 +270,13 @@ begin
 		clk		 => RefClk_s,
 		reset_n	 => '1',
 		tx_ena	 =>  txValid_s,
-		tx_data	 => Data8bit_s,
+		tx_data	 =>  TxData_s,
 		rx		 => uart_rx,
 		rx_busy	 => rx_busy_s,
 		rx_error => rx_error_s,
-		rx_data	 => open,
+		rx_data	 => RxData_s,
 		tx_busy	 => tx_busy_s,
 		tx		 => uart_tx_s
 	);
 	
-	-- datatest : process (RefClk_s) begin
-		-- if rising_edge(RefClk_s) then
-			-- if rx_data_s > "00000000" then
-				-- TP4 <= '1';
-			-- else 
-				-- TP4 <= '0';
-			-- end if;
-		-- end if;
-	-- end process;
 end architecture structure;
