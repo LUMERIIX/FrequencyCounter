@@ -94,13 +94,15 @@ architecture structure of FrequnecyCounterTop is
 			CLK : in STD_LOGIC;
 			RefCountVal : in unsigned;
 			MeasCountVal : in unsigned ;
-			DataValid : in STD_LOGIC;
+			DataInValid : in STD_LOGIC;
 			CounterReset : out STD_LOGIC;
 			--Data8bit : out std_logic_vector(7 downto 0);
 			Valid : out std_logic;
 			TEST : out std_logic;
 			DataOut : out std_logic_vector (7 downto 0);--(33 downto 0)
-         	DataIn : in std_logic_vector (7 downto 0)--(33 downto 0)
+         	DataIn : in std_logic_vector (7 downto 0);--(33 downto 0)
+         	DataOutReady : in std_logic;
+            DataOutValid : out std_logic
 		);
 	end component DataProcessing;
 
@@ -182,7 +184,7 @@ begin
 	TP4 <= CounterReset_s;
 	LED4 <= GatePulse_s;
 	CLKOUT <= RefClk_s;
-	TP5 <= GateReady_s;
+	--TP5 <= ;
 	--LED2 <= test1;
 	LED3 <= test;
 	uart_tx <= not uart_tx_s;
@@ -202,7 +204,7 @@ begin
 	);
 	
 	Start : process (RefClk_s) begin
-		if Startmeas_s = '1' and GateReady_s = '0' then
+		if rising_edge(Startmeas_s) and GateReady_s = '0' then
 			GateEnable_s <= '1';
 			--test_s <= '1';
 		end if;
@@ -234,12 +236,14 @@ begin
 		CLK => RefClk_s,
 		RefCountVal => RefCountVal_s,
 		MeasCountVal => MeasCountVal_s,
-		DataValid =>DataValid_s,
+		DataInValid =>DataValid_s,
 		TEST => TP3,
 		CounterReset => CounterReset_s,
-		Valid => txValid_s,
+		Valid => TP5,
 		DataOut => TxData_s,
-     	DataIn => RxData_s
+     	DataIn => RxData_s,
+     	DataOutReady => tx_busy_s,
+        DataOutValid => txValid_s    	
 	);	
 
 	-- ChannelSelect : component ChannelSelector

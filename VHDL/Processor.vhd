@@ -27,13 +27,13 @@ entity Processor is
 	);
 	port (
 		CLK : in STD_LOGIC;
-		DataValid : in STD_LOGIC;
+		DataInValid : in STD_LOGIC;
 		MeasCountVal : in unsigned;
 		RefCountVal : in unsigned;
 		CounterReset : out  STD_LOGIC;
-		Valid : out STD_LOGIC;
-		RawDataOut : out STD_LOGIC_VECTOR;
-		DataControllerEnable : out std_logic
+		DataOutValid : out STD_LOGIC;
+		TEST : in std_logic;
+		RawDataOut : out STD_LOGIC_VECTOR
 		);
 end Processor;
 
@@ -46,14 +46,13 @@ begin
 	CounterReset <= CounterReset_s;
 	Calculate : process (CLK) begin
 		if rising_edge (CLK) then
-			
-			if DataValid = '1' then
+			if DataInValid = '1' then
 				RawDataOut <= std_logic_vector(MeasCountVal * (to_unsigned(CLK_OCXO,20) / RefCountVal));
 				CounterReset_s <= '1';
-				DataControllerEnable <= '1';
-				--
-			elsif DataValid = '0' and CounterReset_s = '1' then
+				DataOutValid <= '1';
+			elsif TEST = '1' then
 				CounterReset_s <= '0';
+				DataOutValid <= '0';
 				--Test <= '0';
 			end if;
 			--if()
