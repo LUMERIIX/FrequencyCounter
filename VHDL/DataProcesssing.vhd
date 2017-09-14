@@ -19,7 +19,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 --use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.NUMERIC_STD.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+--use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 
 entity DataProcessing is 
@@ -36,7 +36,7 @@ entity DataProcessing is
 		TEST : out std_logic;
 		DataOut : out std_logic_vector (7 downto 0);--(33 downto 0)
 		DataIn : in std_logic_vector (7 downto 0);--(33 downto 0)
-		
+		debug : out std_logic;
 		DataOutReady : in std_logic;
 		DataOutValid : out std_logic
 		);
@@ -58,6 +58,7 @@ architecture structure of DataProcessing is
 		DataOutValid 	: out std_logic;
 		DataInValid 	: in std_logic;
 		DataOutReady 	: in std_logic;
+		debug 			: out std_logic;
 		
 		TEST 			: out std_logic
 	);
@@ -73,6 +74,7 @@ architecture structure of DataProcessing is
 		MeasCountVal : in unsigned;
 		RefCountVal : in unsigned;
 		CounterReset : out  STD_LOGIC;
+
 		DataOutValid : out STD_LOGIC;
 		TEST : in std_logic;
 		RawDataOut : out STD_LOGIC_VECTOR
@@ -122,8 +124,9 @@ begin
 			RST 			=> '0',
 			DataOut 		=> DataOut,
 			DataIn 			=> DataIn,
-			RawDataIn		=> RawDataIn_s,
+			RawDataIn		=> "110100111111111111001011",
 			RawDataOut 		=> RawDataOut_s,
+			debug 			=> debug,
 			DataOutValid 	=> DataOutValid,
 			DataInValid 	=> Valid_s,
 			DataOutReady 	=> DataOutReady,

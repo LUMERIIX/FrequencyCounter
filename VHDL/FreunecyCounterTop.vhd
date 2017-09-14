@@ -18,7 +18,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 --use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+--use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity FrequnecyCounterTop is
@@ -99,6 +99,7 @@ architecture structure of FrequnecyCounterTop is
 			--Data8bit : out std_logic_vector(7 downto 0);
 			Valid : out std_logic;
 			TEST : out std_logic;
+			debug : out std_logic;
 			DataOut : out std_logic_vector (7 downto 0);--(33 downto 0)
          	DataIn : in std_logic_vector (7 downto 0);--(33 downto 0)
          	DataOutReady : in std_logic;
@@ -179,7 +180,7 @@ begin
 	MEAS_OUT <= MeasureClock_s;
 	TP0 <= txValid_s;	
 	--TP3 <= Valid_s;
-	TP2 <= GatePulse_s;
+	TP2 <= tx_busy_s;
 	TP1 <= DataValid_s;
 	TP4 <= CounterReset_s;
 	LED4 <= GatePulse_s;
@@ -239,7 +240,8 @@ begin
 		DataInValid =>DataValid_s,
 		TEST => TP3,
 		CounterReset => CounterReset_s,
-		Valid => TP5,
+		Valid => open,--TP5,
+		debug => TP5, 
 		DataOut => TxData_s,
      	DataIn => RxData_s,
      	DataOutReady => tx_busy_s,
