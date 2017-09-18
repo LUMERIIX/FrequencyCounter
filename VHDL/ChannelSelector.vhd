@@ -36,19 +36,21 @@ end ChannelSelector;
 architecture structure of ChannelSelector is
 	
 begin
-	Selector : process (ExtRefClk) begin 
-		--if IntRefClk = '1' and IntRefClk'event then
-			-- if RefClkSelect = '1' then
-				 RefClk <= ExtRefClk;
-			-- elsif RefClkSelect = '0' then
-				-- RefClk <= ExtRefClk; 
-			-- end if;
-			-- if MeasClkSelect = '1' then
-				 MeasureClk <= ClkA;
-			-- elsif MeasClkSelect = '0' then
-				-- MeasureClk <= ClkB;
-			-- end if;
-		--end if;
+	Selector : process (ExtRefClk) begin --IntRefClk
+		if rising_edge(ExtRefClk) then
+			--if IntRefClk = '1' and IntRefClk'event then
+				-- if RefClkSelect = '1' then
+					RefClk <= ExtRefClk;
+				-- elsif RefClkSelect = '0' then
+					-- RefClk <= ExtRefClk; 
+				-- end if;
+				-- if MeasClkSelect = '1' then
+					MeasureClk <= ExtRefClk;
+				-- elsif MeasClkSelect = '0' then
+					-- MeasureClk <= ClkB;
+				-- end if;
+			--end if;
+		end if;
 	end process;
 		
 

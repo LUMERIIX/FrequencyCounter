@@ -107,18 +107,18 @@ architecture structure of FrequnecyCounterTop is
 		);
 	end component DataProcessing;
 
-	-- component ChannelSelector is
-	-- port (
-		-- IntRefClk 		: in STD_LOGIC;
-		-- ClkA			: in STD_LOGIC;
-		-- ClkB			: in STD_LOGIC;
-		-- ExtRefClk	 	: in STD_LOGIC;
-		-- MeasureClk		: out STD_LOGIC;
-		-- RefClkSelect	: in STD_LOGIC;
-		-- MeasClkSelect	: in STD_LOGIC;
-		-- RefClk			: out STD_LOGIC
-	-- );
-	-- end component;
+	 -- component ChannelSelector is
+	 -- port (
+		 -- IntRefClk 		: in STD_LOGIC;
+		 -- ClkA			: in STD_LOGIC;
+		 -- ClkB			: in STD_LOGIC;
+		 -- ExtRefClk	 	: in STD_LOGIC;
+		 -- MeasureClk		: out STD_LOGIC;
+		 -- RefClkSelect	: in STD_LOGIC;
+		 -- MeasClkSelect	: in STD_LOGIC;
+		 -- RefClk			: out STD_LOGIC
+	 -- );
+	 -- end component;
 
 	component uart is 
 		port(
@@ -158,6 +158,7 @@ architecture structure of FrequnecyCounterTop is
 	signal CounterReset_s : std_logic;
 	signal rx_busy_s : std_logic;
 	signal tx_busy_s : std_logic;	
+	signal DataOutReady : std_logic;	
 	signal rx_error_s : std_logic;
 	signal Count2_s : unsigned (19 downto 0);
     signal reset_s	: std_logic;
@@ -167,14 +168,15 @@ architecture structure of FrequnecyCounterTop is
 	signal txValid_s : std_logic;
 	signal TxData_s : std_logic_vector(7 downto 0);
 	signal RxData_s : std_logic_vector(7 downto 0);
-	signal test_s : std_logic;
+	signal test_s : std_logic; 
+	signal MeasureClocktest_s : std_logic;
 	--signal OpenGate_s : STD_LOGIC;
 begin
 	Startmeas_s <= STARTMEAS;
 	LED1 <= GatePulse_s;
 	ALWAYSON <= '1';
 	TimeVal_s <= TimeVal;
-		RefClk_s <= ExtRefClk;
+	RefClk_s <= ExtRefClk;
 	--MeasureClock_s <= ClkA;
 
 	MEAS_OUT <= MeasureClock_s;
@@ -182,7 +184,7 @@ begin
 	--TP3 <= Valid_s;
 	TP2 <= tx_busy_s;
 	TP1 <= DataValid_s;
-	TP4 <= CounterReset_s;
+	TP4 <= txValid_s;
 	LED4 <= GatePulse_s;
 	CLKOUT <= RefClk_s;
 	--TP5 <= ;
@@ -240,13 +242,14 @@ begin
 		DataInValid =>DataValid_s,
 		TEST => TP3,
 		CounterReset => CounterReset_s,
-		Valid => open,--TP5,
+		Valid => open,
 		debug => TP5, 
 		DataOut => TxData_s,
      	DataIn => RxData_s,
-     	DataOutReady => tx_busy_s,
+     	DataOutReady => DataOutReady,
         DataOutValid => txValid_s    	
 	);	
+	DataOutReady <= not tx_busy_s;
 
 	-- ChannelSelect : component ChannelSelector
 	-- port map(
@@ -254,10 +257,10 @@ begin
 		-- ClkA			=> ClkA,
 		-- ClkB			=> ClkB,
 		-- ExtRefClk	 	=> ExtRefClk,
-		-- MeasureClk		=> MeasureClock_s,
+		-- MeasureClk		=> open,
 		-- RefClkSelect	=> RefClkSelect,
 		-- MeasClkSelect	=> MeasClkSelect,
-		-- RefClk			=> RefClk_s
+		-- RefClk			=> open
 	-- );
 
 	reset : process (ClkA) begin

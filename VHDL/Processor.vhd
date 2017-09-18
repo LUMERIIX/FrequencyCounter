@@ -32,7 +32,7 @@ entity Processor is
 		RefCountVal : in unsigned;
 		CounterReset : out  STD_LOGIC;
 		DataOutValid : out STD_LOGIC;
-		TEST : in std_logic;
+		DataAccepted : in std_logic;
 		RawDataOut : out STD_LOGIC_VECTOR
 		);
 end Processor;
@@ -50,10 +50,9 @@ begin
 				RawDataOut <= std_logic_vector(MeasCountVal * (to_unsigned(CLK_OCXO,20) / RefCountVal));
 				CounterReset_s <= '1';
 				DataOutValid <= '1';
-			elsif TEST = '1' then
+			elsif DataAccepted = '1' then
 				CounterReset_s <= '0';
 				DataOutValid <= '0';
-				--Test <= '0';
 			end if;
 			--if()
 --			if RawDataOut_s > std_logic_vector(to_unsigned(990,RawDataOut'length)) then

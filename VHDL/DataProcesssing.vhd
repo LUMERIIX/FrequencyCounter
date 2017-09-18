@@ -27,18 +27,18 @@ entity DataProcessing is
 		CLK_OCXO : integer 
 	);
 	port( 
-		CLK : in STD_LOGIC;
-		RefCountVal : in unsigned;--(13 downto 0);
-		MeasCountVal : in unsigned; --(13 downto 0);
-		CounterReset : out STD_LOGIC;
-		DataInValid : in STD_LOGIC;
-		Valid : out std_logic;
-		TEST : out std_logic;
-		DataOut : out std_logic_vector (7 downto 0);--(33 downto 0)
-		DataIn : in std_logic_vector (7 downto 0);--(33 downto 0)
-		debug : out std_logic;
-		DataOutReady : in std_logic;
-		DataOutValid : out std_logic
+		CLK 			: in STD_LOGIC;
+		RefCountVal 	: in unsigned;--(13 downto 0);
+		MeasCountVal 	: in unsigned; --(13 downto 0);
+		CounterReset 	: out STD_LOGIC;
+		DataInValid 	: in STD_LOGIC;
+		Valid 			: out std_logic;
+		TEST 			: out std_logic;
+		DataOut 		: out std_logic_vector (7 downto 0);--(33 downto 0)
+		DataIn 			: in std_logic_vector (7 downto 0);--(33 downto 0)
+		debug 			: out std_logic;
+		DataOutReady 	: in std_logic;
+		DataOutValid 	: out std_logic
 		);
 end DataProcessing;
 
@@ -60,7 +60,7 @@ architecture structure of DataProcessing is
 		DataOutReady 	: in std_logic;
 		debug 			: out std_logic;
 		
-		TEST 			: out std_logic
+		DataAccepted 	: out std_logic
 	);
 	end component DataController;
 	
@@ -69,15 +69,15 @@ architecture structure of DataProcessing is
 		CLK_OCXO : integer 
 	);
 	port (
-		CLK : in STD_LOGIC;
-		DataInValid : in STD_LOGIC;
-		MeasCountVal : in unsigned;
-		RefCountVal : in unsigned;
-		CounterReset : out  STD_LOGIC;
+		CLK 			: in STD_LOGIC;
+		DataInValid 	: in STD_LOGIC;
+		MeasCountVal 	: in unsigned;
+		RefCountVal 	: in unsigned;
+		CounterReset 	: out  STD_LOGIC;
 
-		DataOutValid : out STD_LOGIC;
-		TEST : in std_logic;
-		RawDataOut : out STD_LOGIC_VECTOR
+		DataOutValid 	: out STD_LOGIC;
+		DataAccepted 	: in std_logic;
+		RawDataOut 		: out STD_LOGIC_VECTOR
 	);
 	end component Processor;
 	
@@ -88,12 +88,13 @@ architecture structure of DataProcessing is
 	signal RawDataIn_s : std_logic_vector (RawDataOut_s'length-1 downto 0);
 	signal Valid_s : std_logic;
 	signal DataControllerEnable_s : std_logic;
-	signal TEST_s : std_logic;
+	signal DataAccepted_s : std_logic;
+	signal DataOut_s : std_logic_vector (7 downto 0);
 	--signal DataValid_s : std_logic;
 begin
 	CounterReset <= CounterReset_s;
 	Valid <= Valid_s;
-	TEST <= TEST_s;
+	TEST <= DataAccepted_s;
 	
 	Calculate : component Processor 
 		generic map (
@@ -101,12 +102,12 @@ begin
 		)
 		port map (
 			CLK             => CLK,
-			DataInValid       => DataInValid,
+			DataInValid     => DataInValid,
 			MeasCountVal    => MeasCountVal,
 			RefCountVal     => RefCountVal,
 			CounterReset    => CounterReset_s,
 			DataOutValid    => Valid_s,
-			TEST 			=> TEST_s,
+			DataAccepted 	=> DataAccepted_s,
 			RawDataOut		=> RawDataOut_s
 		);
 		
@@ -122,7 +123,7 @@ begin
 			-- TEST 	   => TEST
 			CLK 			=> CLK,
 			RST 			=> '0',
-			DataOut 		=> DataOut,
+			DataOut 		=> DataOut_s,
 			DataIn 			=> DataIn,
 			RawDataIn		=> "110100111111111111001011",
 			RawDataOut 		=> RawDataOut_s,
@@ -130,9 +131,9 @@ begin
 			DataOutValid 	=> DataOutValid,
 			DataInValid 	=> Valid_s,
 			DataOutReady 	=> DataOutReady,
-			TEST 			=> TEST_s
+			DataAccepted 	=> DataAccepted_s
 		);
-		
+		DataOut <= not DataOut_s;
 
 	
 	
