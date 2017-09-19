@@ -107,18 +107,18 @@ architecture structure of FrequnecyCounterTop is
 		);
 	end component DataProcessing;
 
-	 -- component ChannelSelector is
-	 -- port (
-		 -- IntRefClk 		: in STD_LOGIC;
-		 -- ClkA			: in STD_LOGIC;
-		 -- ClkB			: in STD_LOGIC;
-		 -- ExtRefClk	 	: in STD_LOGIC;
-		 -- MeasureClk		: out STD_LOGIC;
-		 -- RefClkSelect	: in STD_LOGIC;
-		 -- MeasClkSelect	: in STD_LOGIC;
-		 -- RefClk			: out STD_LOGIC
-	 -- );
-	 -- end component;
+	 component ChannelSelector is
+	 port (
+		IntRefClk 		: in STD_LOGIC;
+		ClkA			: in STD_LOGIC;
+		ClkB			: in STD_LOGIC;
+		ExtRefClk	 	: in STD_LOGIC;
+		MeasureClk		: out STD_LOGIC;
+		RefClkSelect	: in STD_LOGIC;
+		MeasClkSelect	: in STD_LOGIC;
+		RefClk			: out STD_LOGIC
+	 );
+	 end component;
 
 	component uart is 
 		port(
@@ -176,13 +176,13 @@ begin
 	LED1 <= GatePulse_s;
 	ALWAYSON <= '1';
 	TimeVal_s <= TimeVal;
-	RefClk_s <= ExtRefClk;
+	--RefClk_s <= ExtRefClk;
 	--MeasureClock_s <= ClkA;
 
 	MEAS_OUT <= MeasureClock_s;
 	TP0 <= txValid_s;	
 	--TP3 <= Valid_s;
-	TP2 <= tx_busy_s;
+	TP2 <= GatePulse_s;
 	TP1 <= DataValid_s;
 	TP4 <= txValid_s;
 	LED4 <= GatePulse_s;
@@ -251,21 +251,21 @@ begin
 	);	
 	DataOutReady <= not tx_busy_s;
 
-	-- ChannelSelect : component ChannelSelector
-	-- port map(
-		-- IntRefClk 		=> IntRefClk,
-		-- ClkA			=> ClkA,
-		-- ClkB			=> ClkB,
-		-- ExtRefClk	 	=> ExtRefClk,
-		-- MeasureClk		=> open,
-		-- RefClkSelect	=> RefClkSelect,
-		-- MeasClkSelect	=> MeasClkSelect,
-		-- RefClk			=> open
-	-- );
+	ChannelSelect : component ChannelSelector
+	port map(
+		IntRefClk 		=> IntRefClk,
+		ClkA			=> ClkA,
+		ClkB			=> ClkB,
+		ExtRefClk	 	=> ExtRefClk,
+		MeasureClk		=> MeasureClocktest_s,
+		RefClkSelect	=> RefClkSelect,
+		MeasClkSelect	=> MeasClkSelect,
+		RefClk			=> RefClk_s
+	);
 
-	reset : process (ClkA) begin
-		if rising_edge(ClkA) then
-				if Count2_s = to_unsigned(16000, Count2_s'length) then --1kHz signal
+	reset : process (MeasureClocktest_s) begin
+		if rising_edge(MeasureClocktest_s) then
+				if Count2_s = to_unsigned(16000, Count2_s'length) then --1kHz MeasureClk
 					Count2_s <= to_unsigned(0,Count2_s'length);
 					MeasureClock_s <= not MeasureClock_s;
 				else
@@ -278,8 +278,8 @@ begin
 	port map(
 		clk		 => RefClk_s,
 		reset_n	 => '1',
-		tx_ena	 =>  txValid_s,
-		tx_data	 =>  TxData_s,
+		tx_ena	 => txValid_s,
+		tx_data	 => TxData_s,
 		rx		 => uart_rx,
 		rx_busy	 => rx_busy_s,
 		rx_error => rx_error_s,
