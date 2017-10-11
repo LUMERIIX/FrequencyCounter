@@ -1,4 +1,4 @@
-update=09.10.2017 09:58:06
+update=11.10.2017 08:30:11
 version=1
 last_client=kicad
 [cvpcb]
@@ -23,8 +23,6 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=kicad-library-master/library;kicad-library-master/template;kicad-components-master;kicad-components-master/FPGA/Xilinx;ConnorWinfield.pretty
@@ -207,3 +205,5 @@ LibName175=library-kicad-master/trs_jack
 LibName176=library-kicad-master/usb3_esd_son50-10
 LibName177=library-kicad-master/usb3_micro_ab
 LibName178=library-kicad-master/wolfson
+[general]
+version=1
