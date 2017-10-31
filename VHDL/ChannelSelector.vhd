@@ -1,18 +1,18 @@
 ----------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer: LJ
--- 
--- Create Date:    11:38:06 07/21/2017 
--- Design Name: 
--- Module Name: ChannelSelector   
--- Project Name: FrequnecyCounter
--- Target Devices: iCE40 
--- Tool versions: 
--- Description: 
 --
--- Revision: 
+-- Create Date:    11:38:06 07/21/2017
+-- Design Name:
+-- Module Name: ChannelSelector
+-- Project Name: FrequnecyCounter
+-- Target Devices: iCE40
+-- Tool versions:
+-- Description:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -20,8 +20,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity ChannelSelector is 
-	port ( 
+entity ChannelSelector is
+	port (
 		IntRefClk 		: in STD_LOGIC;
 		ClkA			: in STD_LOGIC;
 		ClkB			: in STD_LOGIC;
@@ -34,19 +34,18 @@ entity ChannelSelector is
 end ChannelSelector;
 
 architecture structure of ChannelSelector is
-	
+
 begin
-	Selector : process (ExtRefClk,IntRefClk,ClkA,ClkB) begin 
+	Selector : process (RefClkSelect,MeasClkSelect,ExtRefClk,IntRefClk,ClkA,ClkB) begin
 				if RefClkSelect = '1' then
 					RefClk <= ExtRefClk;
-				else 
-					RefClk <= IntRefClk; 
+				else
+					RefClk <= IntRefClk;
 				end if;
 				if MeasClkSelect = '1' then
 					MeasureClk <= ClkB;
-				else 
+				else
 					MeasureClk <= ClkA;
 				end if;
 	end process;
 end architecture structure;
-	

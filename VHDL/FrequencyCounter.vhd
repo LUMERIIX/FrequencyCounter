@@ -1,18 +1,18 @@
 ----------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer: LJ
--- 
--- Create Date:    11:38:06 07/21/2017 
--- Design Name: 
--- Module Name: FrequencyCounter   
--- Project Name: FrequencyCounter
--- Target Devices: iCE40 
--- Tool versions: 
--- Description: 
 --
--- Revision: 
+-- Create Date:    11:38:06 07/21/2017
+-- Design Name:
+-- Module Name: FrequencyCounter
+-- Project Name: FrequencyCounter
+-- Target Devices: iCE40
+-- Tool versions:
+-- Description:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -21,8 +21,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity FrequencyCounter is 
-	port ( 
+entity FrequencyCounter is
+	port (
 		CLK 			: in STD_LOGIC;
 		MEAS_CLK		: in STD_LOGIC;
 		GateEnable	 	: in STD_LOGIC;
@@ -47,15 +47,11 @@ architecture structure of FrequencyCounter is
 		DataValid	: out STD_LOGIC;
 		RESET		: in STD_LOGIC;
 		DATA		: out unsigned
-		);   
+		);
 	end component Counter;
 	signal OpenGate_s : STD_LOGIC;
 	signal RefCountVal_s : unsigned (13 downto 0);
 	signal MeasCountVal_s : unsigned (13 downto 0);
-	signal GateEnable_s : STD_LOGIC;
-	signal GatePulse_s : STD_LOGIC;
-	signal MEAS_CLK_s : STD_LOGIC;
-	signal Valid_s : STD_LOGIC;
 	signal DataValidRef_s : STD_LOGIC;
 	signal DataValidMeas_s : STD_LOGIC;
 	signal DataValid_s : STD_LOGIC;
@@ -64,24 +60,20 @@ begin
 	--RefCountVal <= RefCountVal_s;
 	--MeasCountVal <= MeasCountVal_s;
 	OpenGate <= OpenGate_s;
-	GateEnable_s <= GateEnable;
-	GatePulse_s <= GatePulse;
-	MEAS_CLK_s <= MEAS_CLK;
-	Valid_s <= Valid; 
 	DataValid <= DataValid_s;
 
-	GateControl : process (MEAS_CLK_s) begin
-		if rising_edge (MEAS_CLK_s)  then 
-			if GateEnable_s = '1' and Valid_s = '0' then
+	GateControl : process (MEAS_CLK) begin
+		if rising_edge (MEAS_CLK)  then
+			if GateEnable = '1' and Valid = '0' then
 				OpenGate_s <= '1';
 			end if;
-			if Valid_s = '1' and GatePulse_s = '0' then
+			if Valid = '1' and GatePulse = '0' then
 				OpenGate_s <= '0';
 			end if;
-		end if;		
+		end if;
 	end process;
-	
-	BaseCounter : component Counter 
+
+	BaseCounter : component Counter
 	port map(
 		CLK => CLK,
 		ENABLE => OpenGate_s,
@@ -91,15 +83,14 @@ begin
 		DATA => RefCountVal
 	);
 
-	MeasCounter : component Counter 
+	MeasCounter : component Counter
 	port map(
-		CLK => MEAS_CLK_s,
+		CLK => MEAS_CLK,
 		ENABLE => OpenGate_s,
 		TEST => open,
 		DataValid => DataValidMeas_s,
 		RESET => RESET,
 		DATA => MeasCountVal
-	);		
-	OpenGate <= OpenGate_s;
+	);
 end architecture structure;
-	
+

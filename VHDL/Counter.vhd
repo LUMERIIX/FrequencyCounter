@@ -1,17 +1,17 @@
--- Company: 
+-- Company:
 -- Engineer: LJ
--- 
--- Create Date:    11:38:06 07/21/2017 
--- Design Name: 
--- Module Name: Counter   
--- Project Name: FrequnecyCounter
--- Target Devices: iCE40 
--- Tool versions: 
--- Description: 
 --
--- Revision: 
+-- Create Date:    11:38:06 07/21/2017
+-- Design Name:
+-- Module Name: Counter
+-- Project Name: FrequnecyCounter
+-- Target Devices: iCE40
+-- Tool versions:
+-- Description:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -20,14 +20,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 --use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity Counter is 
-	port ( 
+entity Counter is
+	port (
 		CLK 		: in STD_LOGIC;
 		ENABLE 		: in STD_LOGIC;
 		TEST		: out STD_LOGIC;
 		DataValid	: out STD_LOGIC;
 		RESET		: in STD_LOGIC;
-		DATA		: out unsigned 
+		DATA		: out unsigned
 		);
 end Counter;
 
@@ -39,9 +39,9 @@ signal DataValid_s : STD_LOGIC;
 
 begin
 	DATA <= Count_s;
-	DataValid <= DataValid_s; 
-	
-	Counter : process (CLK) begin
+	DataValid <= DataValid_s;
+
+	Counter : process (CLK,RESET) begin
 	if RESET = '0' then
 		if rising_edge(CLK) then
 			if ENABLE = '1' then
@@ -57,5 +57,5 @@ begin
 		TEST <= '0';
 	end if;
 	end process;
-	
+
 end architecture structure;

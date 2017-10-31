@@ -1,19 +1,19 @@
 ----------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer: LJ
--- 
--- Create Date:    11:38:06 07/21/2017 
--- Design Name: 
--- Module Name: FrequnecyCounterTop   
+--
+-- Create Date:    11:38:06 07/21/2017
+-- Design Name:
+-- Module Name: FrequnecyCounterTop
 
 -- Project Name: FrequnecyCounter
--- Target Devices: iCE40 
--- Tool versions: 
--- Description: 
+-- Target Devices: iCE40
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -25,16 +25,14 @@ entity FrequnecyCounterTop is
 	generic(
 		CLK_OCXO : integer := 1000000
 	);
-	port ( 
+	port (
 		IntRefClk 		: in STD_LOGIC;
 		ClkA			: in STD_LOGIC;
 		ClkB			: in STD_LOGIC;
 		ExtRefClk 		: in STD_LOGIC;
 		ENABLE_EXT_REF	: in STD_LOGIC;
-		LED2			: out STD_LOGIC;
 		MEAS_OUT		: out STD_LOGIC;
 		LED1			: out STD_LOGIC;
-		LED3 			: out STD_LOGIC;
 		TP0				: out STD_LOGIC;
 		TP1				: out STD_LOGIC;
 		TP2				: out STD_LOGIC;
@@ -43,14 +41,13 @@ entity FrequnecyCounterTop is
 		TP5				: out STD_LOGIC;
 		CLKOUT			: out STD_LOGIC;
 		TimeVal			: in STD_LOGIC_VECTOR (1 downto 0);
-		LED4			: out STD_LOGIC;
 		STARTMEAS		: in STD_LOGIC;
 		ALWAYSON		: out STD_LOGIC;
 		uart_rx			: in STD_LOGIC;
 		uart_tx			: out STD_LOGIC;
 		MeasClkSelect   : in STD_LOGIC;
 		RefClkSelect	: in STD_LOGIC
-		);	
+		);
 end FrequnecyCounterTop;
 
 architecture structure of FrequnecyCounterTop is
@@ -70,7 +67,7 @@ architecture structure of FrequnecyCounterTop is
 			Valid			: in STD_LOGIC
 			);
 	end component FrequencyCounter;
-	
+
 	component GateTime 	is
 		generic (
 			CLK_OCXO : integer
@@ -85,7 +82,7 @@ architecture structure of FrequnecyCounterTop is
 			Valid			: out STD_LOGIC
 		);
 	end component GateTime;
-	
+
 	component DataProcessing is
 		generic (
 			CLK_OCXO : integer
@@ -120,7 +117,7 @@ architecture structure of FrequnecyCounterTop is
 	 );
 	 end component;
 
-	component uart is 
+	component uart is
 		port(
 			clk			:	IN		STD_LOGIC;										--system clock
 			reset_n		:	IN		STD_LOGIC;										--ascynchronous reset
@@ -131,10 +128,10 @@ architecture structure of FrequnecyCounterTop is
 			rx_error	:	OUT		STD_LOGIC;										--start, parity, or stop bit error detected
 			rx_data		:	OUT		STD_LOGIC_VECTOR(7 DOWNTO 0);					--data received
 			tx_busy		:	OUT		STD_LOGIC;  									--transmission in progress
-			tx			:	OUT		STD_LOGIC										--transmit pin	
+			tx			:	OUT		STD_LOGIC										--transmit pin
 		);
 	end component;
-	
+
 	--signal ClkA_s : std_logic;
 	--signal ClkB_s : std_logic;
 	signal RefClk_s : std_logic;
@@ -157,8 +154,8 @@ architecture structure of FrequnecyCounterTop is
 	signal DataValid_s : std_logic;
 	signal CounterReset_s : std_logic;
 	signal rx_busy_s : std_logic;
-	signal tx_busy_s : std_logic;	
-	signal DataOutReady : std_logic;	
+	signal tx_busy_s : std_logic;
+	signal DataOutReady : std_logic;
 	signal rx_error_s : std_logic;
 	signal Count2_s : unsigned (19 downto 0);
     signal reset_s	: std_logic;
@@ -168,7 +165,7 @@ architecture structure of FrequnecyCounterTop is
 	signal txValid_s : std_logic;
 	signal TxData_s : std_logic_vector(7 downto 0);
 	signal RxData_s : std_logic_vector(7 downto 0);
-	signal test_s : std_logic; 
+	signal test_s : std_logic;
 	signal MeasureClocktest_s : std_logic;
 	--signal OpenGate_s : STD_LOGIC;
 begin
@@ -180,19 +177,19 @@ begin
 	--MeasureClock_s <= ClkA;
 
 	MEAS_OUT <= MeasureClock_s;
-	TP0 <= txValid_s;	
+	TP0 <= txValid_s;
 	--TP3 <= Valid_s;
 	TP2 <= GatePulse_s;
 	TP1 <= DataValid_s;
 	TP4 <= txValid_s;
-	LED4 <= GatePulse_s;
+	--LED4 <= GatePulse_s;
 	CLKOUT <= RefClk_s;
 	--TP5 <= ;
 	--LED2 <= test1;
-	LED3 <= test;
+	--LED3 <= test;
 	uart_tx <= not uart_tx_s;
 	--tx_data_s <= std_logic_vector(DATOUT_s);
-	
+
 	Timing : component GateTime
 	generic map(
 		CLK_OCXO => CLK_OCXO
@@ -205,8 +202,8 @@ begin
 		GateReady => GateReady_s,
 		Valid => Valid_s
 	);
-	
-	Start : process (RefClk_s) begin
+
+	Start : process (Startmeas_s,GateReady_s) begin
 		if rising_edge(Startmeas_s) and GateReady_s = '0' then
 			GateEnable_s <= '1';
 			--test_s <= '1';
@@ -215,7 +212,7 @@ begin
 			GateEnable_s <= '0';
 		end if;
 	end process;
-		
+
 	FreqCount : component FrequencyCounter
 	port map(
 		CLK => RefClk_s,
@@ -230,7 +227,7 @@ begin
 		OpenGate => GateReady_s,
 		Valid => Valid_s
 	);
-	
+
 	Processing : component DataProcessing
 	generic map(
 		CLK_OCXO => CLK_OCXO
@@ -243,12 +240,12 @@ begin
 		TEST => TP3,
 		CounterReset => CounterReset_s,
 		Valid => open,
-		debug => TP5, 
+		debug => TP5,
 		DataOut => TxData_s,
      	DataIn => RxData_s,
      	DataOutReady => DataOutReady,
-        DataOutValid => txValid_s    	
-	);	
+        DataOutValid => txValid_s
+	);
 	DataOutReady <= not tx_busy_s;
 
 	ChannelSelect : component ChannelSelector
@@ -273,7 +270,7 @@ begin
 				end if;
 			end if;
     end process;
-	
+
 	DataTransfer : component uart
 	port map(
 		clk		 => RefClk_s,
@@ -287,5 +284,5 @@ begin
 		tx_busy	 => tx_busy_s,
 		tx		 => uart_tx_s
 	);
-	
+
 end architecture structure;
