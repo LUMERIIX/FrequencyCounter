@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:FrequnecyCounter-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -711,19 +712,6 @@ F 3 "" H 4550 4350 50  0001 C CNN
 	1    4550 4350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7175 3525 7350 3525
-$Comp
-L +3.3V #PWR044
-U 1 1 59BBED1D
-P 7350 3525
-F 0 "#PWR044" H 7350 3375 50  0001 C CNN
-F 1 "+3.3V" H 7350 3665 50  0000 C CNN
-F 2 "" H 7350 3525 50  0001 C CNN
-F 3 "" H 7350 3525 50  0001 C CNN
-	1    7350 3525
-	1    0    0    -1  
-$EndComp
 NoConn ~ 7175 4825
 NoConn ~ 7175 4925
 Wire Wire Line
@@ -739,4 +727,5 @@ F 3 "" H 7300 5025 50  0001 C CNN
 	1    7300 5025
 	1    0    0    -1  
 $EndComp
+NoConn ~ 7175 3525
 $EndSCHEMATC

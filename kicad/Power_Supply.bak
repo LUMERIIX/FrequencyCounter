@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:FrequnecyCounter-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -613,9 +614,11 @@ NoConn ~ 4350 3725
 NoConn ~ 4350 3625
 Connection ~ 8825 1875
 $Comp
-L SW_Push SW1
+L SW_Push-RESCUE-FrequnecyCounter SW1
 U 1 1 59642ABE
 P 1275 3500
+AR Path="/59642ABE" Ref="SW1"  Part="1" 
+AR Path="/595D114F/59642ABE" Ref="SW1"  Part="1" 
 F 0 "SW1" H 1325 3600 50  0000 L CNN
 F 1 "SW_Push" H 1275 3440 50  0000 C CNN
 F 2 "Footprints_LJ:Mini-Taster-4pin" H 1275 3700 50  0001 C CNN
