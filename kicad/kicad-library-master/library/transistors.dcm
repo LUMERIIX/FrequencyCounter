@@ -353,6 +353,11 @@ K NPN transistor
 F https://www.fairchildsemi.com/datasheets/BC/BC818.pdf
 $ENDCMP
 #
+$CMP BC846B
+D 45V Vce, 0.8A Ic, NPN, SOT-23
+K NPN transistor
+$ENDCMP
+#
 $CMP BC846BDW1
 D 65V Vce, 100mA IC, Dual NPN/NPN Transistors, SOT-363
 K Transistor NPN/NPN
