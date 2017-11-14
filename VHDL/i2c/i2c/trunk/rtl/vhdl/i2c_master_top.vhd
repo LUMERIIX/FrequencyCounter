@@ -80,7 +80,7 @@ entity i2c_master_top is
             wb_clk_i      : in  std_logic;                    -- master clock input
             wb_rst_i      : in  std_logic := '0';             -- synchronous active high reset
             arst_i        : in  std_logic := not ARST_LVL;    -- asynchronous reset
-            wb_adr_i      : in  std_logic_vector(2 downto 0);
+            wb_adr_i      : in  std_logic_vector(7 downto 0);
             wb_dat_i      : in  std_logic_vector(7 downto 0); -- Databus input
             wb_dat_o      : out std_logic_vector(7 downto 0); -- Databus output
             wb_we_i       : in  std_logic;                    -- Write enable input
@@ -166,23 +166,23 @@ architecture structural of i2c_master_top is
     signal irq_flag      : std_logic;                -- interrupt pending flag
     signal i2c_busy      : std_logic;                -- i2c bus busy (start signal detected)
     signal i2c_al, al    : std_logic;                -- arbitration lost
-    signal wb_adr_s		 : std_logic_vector;			--lower address bits
+    signal wb_adr_s		 : std_logic_vector(7 downto 0);			--lower address bits
 
 begin
     -- generate internal reset signal
-    rst_i <= arst_i xor ARST_LVL;
+    rst_i <= '1';--arst_i xor ARST_LVL;
 
     -- generate acknowledge output signal
-    gen_ack_o : process(wb_clk_i)
-    begin
-        if (wb_clk_i'event and wb_clk_i = '1') then
-            iack_o <= wb_cyc_i and wb_stb_i and not iack_o;         -- because timing is always honored
-        end if;
-    end process gen_ack_o;
+--    gen_ack_o : process(wb_clk_i)
+--    begin
+--        if (wb_clk_i'event and wb_clk_i = '1') then
+--            iack_o <= wb_cyc_i and wb_stb_i;-- and not iack_o;         -- because timing is always honored
+--        end if;
+--    end process gen_ack_o;
     wb_ack_o <= iack_o;
 
     -- generate wishbone write access signal
-    wb_wacc <= wb_we_i and iack_o;
+    wb_wacc <= wb_cyc_i and wb_stb_i;-- and wb_we_i;
 
     wb_adr_s <= wb_adr_i;
     -- assign wb_dat_o
@@ -190,19 +190,19 @@ begin
     begin
         if (wb_clk_i'event and wb_clk_i = '1') then
             case wb_adr_s is
-                when "000"  => wb_dat_o <= std_logic_vector(prer( 7 downto 0));
-                when "001"  => wb_dat_o <= std_logic_vector(prer(15 downto 8));
-                when "010"  => wb_dat_o <= ctr;
-                when "011"  => wb_dat_o <= rxr; -- write is transmit register TxR
-                when "100"  => wb_dat_o <= sr;  -- write is command register CR
+                when x"00"  => wb_dat_o <= std_logic_vector(prer( 7 downto 0));
+                when x"10"  => wb_dat_o <= std_logic_vector(prer(15 downto 8));
+                when x"20"  => wb_dat_o <= ctr;
+                when x"30"  => wb_dat_o <= rxr; -- write is transmit register TxR
+                when x"40"  => wb_dat_o <= sr;  -- write is command register CR
 
                 -- Debugging registers:
                 -- These registers are not documented.
                 -- Functionality could change in future releases
-                when "101"  => wb_dat_o <= txr;
-                when "110"  => wb_dat_o <= cr;
-                when "111"  => wb_dat_o <= (others => '0');
-                when others => wb_dat_o <= (others => 'X'); -- for simulation only
+--                when "101"  => wb_dat_o <= txr;
+--                when "110"  => wb_dat_o <= cr;
+--                when "111"  => wb_dat_o <= (others => '0');
+                when others => wb_dat_o <= (others => '0'); -- for simulation only
             end case;
         end if;
     end process assign_dato;
@@ -216,17 +216,17 @@ begin
             ctr  <= (others => '0');
             txr  <= (others => '0');
         elsif (wb_clk_i'event and wb_clk_i = '1') then
-               if (wb_rst_i = '1') then
+               elsif (wb_rst_i = '1') then
                    prer <= (others => '1');
                    ctr  <= (others => '0');
                    txr  <= (others => '0');
-               elsif (wb_wacc = '1') then
+               elsif ( wb_wacc = '1') then
                    case wb_adr_s is
-                       when "000" => prer( 7 downto 0) <= unsigned(wb_dat_i);
-                       when "001" => prer(15 downto 8) <= unsigned(wb_dat_i);
-                       when "010" => ctr               <= wb_dat_i;
-                       when "011" => txr               <= wb_dat_i;
-                       when "100" => null; --write to CR, avoid executing the others clause
+                       when x"00" => prer( 7 downto 0) <= unsigned(wb_dat_i);
+                       when x"10" => prer(15 downto 8) <= unsigned(wb_dat_i);
+                       when x"20" => ctr               <= wb_dat_i;
+                       when x"30" => txr               <= wb_dat_i;
+                       when x"40" => null; --write to CR, avoid executing the others clause
 
                       -- illegal cases, for simulation only
                       when others =>
@@ -236,7 +236,6 @@ begin
                           txr  <= (others => 'X');
                    end case;
                end if;
-        end if;
     end process gen_regs;
 
 
@@ -249,7 +248,7 @@ begin
             if (wb_rst_i = '1') then
                 cr <= (others => '0');
             elsif (wb_wacc = '1') then
-                if ( (core_en = '1') and (wb_adr_s = "100") ) then
+                if ( (core_en = '1') and (wb_adr_s = x"40") ) then
                     -- only take new commands when i2c core enabled
                     -- pending commands are finished
                     cr <= wb_dat_i;
