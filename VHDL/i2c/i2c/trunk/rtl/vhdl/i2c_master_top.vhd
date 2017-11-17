@@ -149,23 +149,23 @@ architecture structural of i2c_master_top is
     signal wb_wacc : std_logic;
 
     -- internal acknowledge signal
-    signal iack_o : std_logic;
+    signal iack_o : std_logic := '0';
 
     -- done signal: command completed, clear command register
-    signal done : std_logic;
+    signal done : std_logic := '0';
 
     -- command register signals
-    signal sta, sto, rd, wr, ack, iack : std_logic;
+    signal sta, sto, rd, wr, ack, iack : std_logic := '0';
 
     signal core_en : std_logic;                      -- core enable signal
     signal ien     : std_logic;                      -- interrupt enable signal
 
     -- status register signals
-    signal irxack, rxack : std_logic;                -- received aknowledge from slave
-    signal tip           : std_logic;                -- transfer in progress
-    signal irq_flag      : std_logic;                -- interrupt pending flag
-    signal i2c_busy      : std_logic;                -- i2c bus busy (start signal detected)
-    signal i2c_al, al    : std_logic;                -- arbitration lost
+    signal irxack, rxack : std_logic := '0';                -- received aknowledge from slave
+    signal tip           : std_logic := '0';                -- transfer in progress
+    signal irq_flag      : std_logic := '0';                -- interrupt pending flag
+    signal i2c_busy      : std_logic := '0';                -- i2c bus busy (start signal detected)
+    signal i2c_al, al    : std_logic := '0';                -- arbitration lost
     signal wb_adr_s		 : std_logic_vector(7 downto 0);			--lower address bits
 
 begin
@@ -188,8 +188,8 @@ begin
     -- assign wb_dat_o
     assign_dato : process(wb_clk_i)
     begin
-        if (wb_clk_i'event and wb_clk_i = '1') then
-            case wb_adr_s is
+        if rising_edge(wb_clk_i) then
+            case wb_dat_i is
                 when x"00"  => wb_dat_o <= std_logic_vector(prer( 7 downto 0));
                 when x"10"  => wb_dat_o <= std_logic_vector(prer(15 downto 8));
                 when x"20"  => wb_dat_o <= ctr;
@@ -202,7 +202,7 @@ begin
 --                when "101"  => wb_dat_o <= txr;
 --                when "110"  => wb_dat_o <= cr;
 --                when "111"  => wb_dat_o <= (others => '0');
-                when others => wb_dat_o <= (others => '0'); -- for simulation only
+                when others => wb_dat_o <= x"00"; -- for simulation only
             end case;
         end if;
     end process assign_dato;
@@ -230,10 +230,11 @@ begin
 
                       -- illegal cases, for simulation only
                       when others =>
-                          report ("Illegal write address, setting all registers to unknown.");
-                          prer <= (others => 'X');
-                          ctr  <= (others => 'X');
-                          txr  <= (others => 'X');
+                          null;
+--                          report ("Illegal write address, setting all registers to unknown.");
+--                          prer <= (others => 'X');
+--                          ctr  <= (others => 'X');
+--                          txr  <= (others => 'X');
                    end case;
                end if;
     end process gen_regs;
