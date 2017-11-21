@@ -190,10 +190,10 @@ begin
     begin
         if rising_edge(wb_clk_i) then
             case wb_dat_i is
-                when x"00"  => wb_dat_o <= std_logic_vector(prer( 7 downto 0));
+                when x"04"  => wb_dat_o <= std_logic_vector(prer( 7 downto 0));
                 when x"10"  => wb_dat_o <= std_logic_vector(prer(15 downto 8));
                 when x"20"  => wb_dat_o <= ctr;
-                when x"30"  => wb_dat_o <= rxr; -- write is transmit register TxR
+                when x"34"  => wb_dat_o <= rxr; -- write is transmit register TxR
                 when x"40"  => wb_dat_o <= sr;  -- write is command register CR
 
                 -- Debugging registers:
@@ -222,7 +222,7 @@ begin
                    txr  <= (others => '0');
                elsif ( wb_wacc = '1') then
                    case wb_adr_s is
-                       when x"00" => prer( 7 downto 0) <= unsigned(wb_dat_i);
+                       when x"04" => prer( 7 downto 0) <= unsigned(wb_dat_i);
                        when x"10" => prer(15 downto 8) <= unsigned(wb_dat_i);
                        when x"20" => ctr               <= wb_dat_i;
                        when x"30" => txr               <= wb_dat_i;
@@ -249,7 +249,7 @@ begin
             if (wb_rst_i = '1') then
                 cr <= (others => '0');
             elsif (wb_wacc = '1') then
-                if ( (core_en = '1') and (wb_adr_s = x"40") ) then
+                if ( (core_en = '1') and (wb_adr_s = x"44") ) then
                     -- only take new commands when i2c core enabled
                     -- pending commands are finished
                     cr <= wb_dat_i;
