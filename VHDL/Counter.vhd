@@ -27,18 +27,18 @@ entity Counter is
 		TEST		: out STD_LOGIC;
 		DataValid	: out STD_LOGIC;
 		RESET		: in STD_LOGIC;
-		DATA		: out unsigned
+		DATA		: out std_logic_vector (31 downto 0)
 		);
 end Counter;
 
 architecture structure of Counter is
 
-signal Count_s : unsigned (13 downto 0);
+signal Count_s : unsigned (31 downto 0) := to_unsigned(0,32);
 signal DataValid_s : STD_LOGIC;
 
 
 begin
-	DATA <= Count_s;
+	DATA <= std_logic_vector(Count_s);
 	DataValid <= DataValid_s;
 
 	Counter : process (CLK,RESET) begin
