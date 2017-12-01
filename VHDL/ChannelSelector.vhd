@@ -21,31 +21,33 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity ChannelSelector is
-	port (
+	 port (
 		IntRefClk 		: in STD_LOGIC;
 		ClkA			: in STD_LOGIC;
 		ClkB			: in STD_LOGIC;
 		ExtRefClk	 	: in STD_LOGIC;
 		MeasureClk		: out STD_LOGIC;
-		RefClkSelect	: in STD_LOGIC;
-		MeasClkSelect	: in STD_LOGIC;
+		ChannelConfig   : in std_logic_vector(1 downto 0);
 		RefClk			: out STD_LOGIC
-		);
+	 );
 end ChannelSelector;
 
 architecture structure of ChannelSelector is
 
 begin
-	Selector : process (RefClkSelect,MeasClkSelect,ExtRefClk,IntRefClk,ClkA,ClkB) begin
-				if RefClkSelect = '1' then
-					RefClk <= ExtRefClk;
-				else
-					RefClk <= IntRefClk;
-				end if;
-				if MeasClkSelect = '1' then
-					MeasureClk <= ClkB;
-				else
-					MeasureClk <= ClkA;
-				end if;
-	end process;
+    Selector : process (ChannelConfig,ClkA,ClkB,IntRefClk,ExtRefClk) begin
+        if ChannelConfig = "00" then
+            MeasureClk <= ClkA;
+            RefClk <= IntRefClk;
+        elsif ChannelConfig = "01" then
+            MeasureClk <= ClkA;
+            RefClk <= ExtRefClk;
+        elsif ChannelConfig = "10" then
+            MeasureClk <= ClkB;
+            RefClk <= IntRefClk;
+        elsif ChannelConfig = "11" then
+            MeasureClk <= ClkB;
+            RefClk <= ExtRefClk;
+        end if;
+    end process;
 end architecture structure;
