@@ -26,10 +26,10 @@ entity FrequencyCounter is
 		CLK 			: in STD_LOGIC;
 		MEAS_CLK		: in STD_LOGIC;
 		GateEnable	 	: in STD_LOGIC;
-		RefCountVal		: out unsigned;
+		RefCountVal		: out std_logic_vector (31 downto 0);
 		GatePulse		: in  STD_LOGIC;
 		TEST 			: out STD_LOGIC;
-		MeasCountVal	: out unsigned;
+		MeasCountVal	: out std_logic_vector (31 downto 0);
 		OpenGate		: out STD_LOGIC;
 		DataValid		: out STD_LOGIC;
 		RESET			: in STD_LOGIC;
@@ -46,12 +46,12 @@ architecture structure of FrequencyCounter is
 		TEST		: out STD_LOGIC;
 		DataValid	: out STD_LOGIC;
 		RESET		: in STD_LOGIC;
-		DATA		: out unsigned
+		DATA		: out std_logic_vector(31 downto 0)
 		);
 	end component Counter;
 	signal OpenGate_s : STD_LOGIC;
-	signal RefCountVal_s : unsigned (13 downto 0);
-	signal MeasCountVal_s : unsigned (13 downto 0);
+	signal RefCountVal_s : unsigned (31 downto 0);
+	signal MeasCountVal_s : unsigned (31 downto 0);
 	signal DataValidRef_s : STD_LOGIC;
 	signal DataValidMeas_s : STD_LOGIC;
 	signal DataValid_s : STD_LOGIC;
