@@ -135,12 +135,14 @@ architecture structural of i2c_master_top is
     end component i2c_master_byte_ctrl;
 
     -- registers
-    signal prer : unsigned(15 downto 0);             -- clock prescale register
-    signal ctr  : std_logic_vector(7 downto 0);      -- control register
-    signal txr  : std_logic_vector(7 downto 0);      -- transmit register
-    signal rxr  : std_logic_vector(7 downto 0);      -- receive register
-    signal cr   : std_logic_vector(7 downto 0);      -- command register
-    signal sr   : std_logic_vector(7 downto 0);      -- status register
+    signal prer : unsigned(15 downto 0) := x"0000";             -- clock prescale register
+    signal ctr  : std_logic_vector(7 downto 0) := x"00";      -- control register
+    signal txr  : std_logic_vector(7 downto 0) := x"00";      -- transmit register
+    signal rxr  : std_logic_vector(7 downto 0) := x"00";      -- receive register
+    signal cr   : std_logic_vector(7 downto 0) := x"00";      -- command register
+    signal sr   : std_logic_vector(7 downto 0) := "00000000";      -- status register
+
+    signal LEDS : std_logic_vector(7 downto 0);
 
     -- internal reset signal
     signal rst_i : std_logic;
@@ -157,8 +159,8 @@ architecture structural of i2c_master_top is
     -- command register signals
     signal sta, sto, rd, wr, ack, iack : std_logic := '0';
 
-    signal core_en : std_logic;                      -- core enable signal
-    signal ien     : std_logic;                      -- interrupt enable signal
+    signal core_en : std_logic := '0';                      -- core enable signal
+    signal ien     : std_logic := '0';                      -- interrupt enable signal
 
     -- status register signals
     signal irxack, rxack : std_logic := '0';                -- received aknowledge from slave
@@ -173,29 +175,29 @@ begin
     rst_i <= '1';--arst_i xor ARST_LVL;
 
     -- generate acknowledge output signal
---    gen_ack_o : process(wb_clk_i)
---    begin
---        if (wb_clk_i'event and wb_clk_i = '1') then
---            iack_o <= wb_cyc_i and wb_stb_i;-- and not iack_o;         -- because timing is always honored
---        end if;
---    end process gen_ack_o;
+    gen_ack_o : process(wb_clk_i)
+    begin
+        if (wb_clk_i'event and wb_clk_i = '1') then
+            iack_o <= wb_cyc_i and wb_stb_i;-- and not iack_o;         -- because timing is always honored
+        end if;
+    end process gen_ack_o;
     wb_ack_o <= iack_o;
 
     -- generate wishbone write access signal
-    wb_wacc <= wb_cyc_i and wb_stb_i;-- and wb_we_i;
+    wb_wacc <= wb_cyc_i and wb_stb_i and wb_we_i;
 
     wb_adr_s <= wb_adr_i;
-    -- assign wb_dat_o
-    assign_dato : process(wb_clk_i)
+    --assign wb_dat_o
+    assign_dato : process(wb_clk_i,wb_adr_s)
     begin
         if rising_edge(wb_clk_i) then
-            case wb_dat_i is
+            case wb_adr_s is
                 when x"04"  => wb_dat_o <= std_logic_vector(prer( 7 downto 0));
-                when x"10"  => wb_dat_o <= std_logic_vector(prer(15 downto 8));
-                when x"20"  => wb_dat_o <= ctr;
-                when x"34"  => wb_dat_o <= rxr; -- write is transmit register TxR
-                when x"40"  => wb_dat_o <= sr;  -- write is command register CR
-
+                when x"08"  => wb_dat_o <= std_logic_vector(prer(15 downto 8));
+                when x"0C"  => wb_dat_o <= ctr;
+                when x"14"  => wb_dat_o <= rxr; -- write is Receive register RxR
+                when x"1C"  => wb_dat_o <= sr;  -- write is status register SR
+                when x"20" => wb_dat_o  <= LEDS;
                 -- Debugging registers:
                 -- These registers are not documented.
                 -- Functionality could change in future releases
@@ -215,28 +217,30 @@ begin
             prer <= (others => '1');
             ctr  <= (others => '0');
             txr  <= (others => '0');
-        elsif (wb_clk_i'event and wb_clk_i = '1') then
-               elsif (wb_rst_i = '1') then
+        elsif (rising_edge(wb_clk_i)) then
+               if (wb_rst_i = '1') then
                    prer <= (others => '1');
                    ctr  <= (others => '0');
                    txr  <= (others => '0');
                elsif ( wb_wacc = '1') then
                    case wb_adr_s is
                        when x"04" => prer( 7 downto 0) <= unsigned(wb_dat_i);
-                       when x"10" => prer(15 downto 8) <= unsigned(wb_dat_i);
-                       when x"20" => ctr               <= wb_dat_i;
-                       when x"30" => txr               <= wb_dat_i;
-                       when x"40" => null; --write to CR, avoid executing the others clause
+                       when x"08" => prer(15 downto 8) <= unsigned(wb_dat_i);
+                       when x"10" => txr               <= wb_dat_i;
+                       when x"0C" => ctr               <= wb_dat_i;
+                       when x"20" => LEDS              <= wb_dat_i;
+                       --when x"40" => null <= wb_dat_i; --write to CR, avoid executing the others clause
 
                       -- illegal cases, for simulation only
                       when others =>
-                          null;
+                         null;--wb_dat_o <= x"00";
 --                          report ("Illegal write address, setting all registers to unknown.");
 --                          prer <= (others => 'X');
 --                          ctr  <= (others => 'X');
 --                          txr  <= (others => 'X');
                    end case;
                end if;
+            end if;
     end process gen_regs;
 
 
@@ -249,7 +253,7 @@ begin
             if (wb_rst_i = '1') then
                 cr <= (others => '0');
             elsif (wb_wacc = '1') then
-                if ( (core_en = '1') and (wb_adr_s = x"44") ) then
+                if ( (core_en = '1') and (wb_adr_i = x"18") ) then
                     -- only take new commands when i2c core enabled
                     -- pending commands are finished
                     cr <= wb_dat_i;
@@ -349,12 +353,12 @@ begin
         end process gen_irq;
 
         -- assign status register bits
-        sr(7)          <= rxack;
-        sr(6)          <= i2c_busy;
-        sr(5)          <= al;
-        sr(4 downto 2) <= (others => '0'); -- reserved
-        sr(1)          <= tip;
-        sr(0)          <= irq_flag;
+        sr(7)          <= rxack;--'1';--rxack;
+        sr(6)          <= i2c_busy;--'1';--i2c_busy;
+        sr(5)          <= al;--'1';--al;
+        sr(4 downto 2) <= (others => '0');--(others => '1');-- -- reserved
+        sr(1)          <= tip;--'1';--;
+        sr(0)          <= irq_flag;--'1';--
     end block;
 
 end architecture structural;
