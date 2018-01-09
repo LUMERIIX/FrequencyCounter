@@ -1,16 +1,14 @@
 ----------------------------------------------------------------------------------
 -- Company:
--- Engineer:
+-- Engineer: LJ
 --
 -- Create Date:    13:35:49 12/07/2017
 -- Design Name:
--- Module Name:    FrequencyCounter - Behavioral
--- Project Name:
--- Target Devices:
+-- Module Name: FrequencyCounter
+-- Project Name: FrequencyCounter
+-- Target Devices: Spartan 6 LX 9
 -- Tool versions:
 -- Description:
---
--- Dependencies:
 --
 -- Revision:
 -- Revision 0.01 - File Created
@@ -60,11 +58,7 @@ entity FrequencyCounter is
 --        TxData          : out std_logic;
 
         --Debug
-        TP0             : out std_logic;
-        TP1             : out std_logic;
-        TP2             : out std_logic;
-        TP3             : out std_logic;
-        TP4             : out std_logic
+        TPs                 : out std_logic_vector(9 downto 0)
     );
 end entity FrequencyCounter;
 
@@ -73,6 +67,7 @@ architecture Behavioral of FrequencyCounter is
 		port(
 			CLK 			: in STD_LOGIC;
 			MEAS_CLK		: in STD_LOGIC;
+            CounterReset    : in STD_LOGIC;
 			GateEnable	 	: in STD_LOGIC;
 			RefCountVal		: out std_logic_vector (31 downto 0);
 			GatePulse		: in  STD_LOGIC;
@@ -91,6 +86,7 @@ architecture Behavioral of FrequencyCounter is
 		);
 		port(
 			CLK 			: in STD_LOGIC;
+			RESET           : in STD_LOGIC;
 			TimeVal			: in STD_LOGIC_VECTOR (1 downto 0);
 			--Testsig			: out STD_LOGIC;
 			GatePulse		: out STD_LOGIC;
@@ -135,12 +131,12 @@ architecture Behavioral of FrequencyCounter is
 	signal MeasureClock_s : std_logic;
 	signal RefCountVal_s : std_logic_vector (31 downto 0);
 	signal MeasCountVal_s : std_logic_vector (31 downto 0);
-	signal GateReady_s : std_logic;
+	signal GateReady_s : std_logic := '0';
 	signal DATOUT_s : std_logic_vector(33 downto 0);
-	signal TimeBase_s : std_logic_vector (1 downto 0);
-	signal Startmeas_s : std_logic;
+	signal TimeBase_s : std_logic_vector (1 downto 0) := "00";
+	signal Startmeas_s : std_logic := '0';
 	signal Valid_s : std_logic;
-	signal GateEnable_s : std_logic;
+	signal GateEnable_s : std_logic := '0';
 	signal done_s : std_logic;
 	signal debug1_s : std_logic;
 	signal debug2_s : std_logic;
@@ -166,22 +162,17 @@ architecture Behavioral of FrequencyCounter is
 	--signal LEDS : STD_LOGIC_VECTOR (15 downto 0);
 	--signal LED : STD_LOGIC;
 	--signal OpenGate_s : STD_LOGIC;
-	signal ChannelConfig_s : std_logic_vector(1 downto 0);
+	signal ChannelConfig_s : std_logic_vector(1 downto 0) := "00";
 	signal CalibOsc_s   : std_logic;
 	signal DataInValid_s : std_logic;
     signal RxDataOutValid_s : std_logic;
 
 
     signal LED1            : std_logic;
-    signal MEAS_OUT        : std_logic;
---    signal TP0             : std_logic;
---    signal TP1             : std_logic;
---    signal TP2             : std_logic;
---    signal TP3             : std_logic;
---    signal TP4             : std_logic;
-    signal CLKOUT          : std_logic;
-    signal uart_tx         : std_logic;
-    signal ZpuRxData       : std_logic_vector(7 downto 0);
+    --signal MEAS_OUT        : std_logic;
+    --signal CLKOUT          : std_logic;
+    --signal uart_tx         : std_logic;
+    --signal ZpuRxData       : std_logic_vector(7 downto 0);
 
     signal iack_o       : std_logic;
     signal wb_wacc      : std_logic;
@@ -196,18 +187,14 @@ begin
 	CLK <= RefClk_s;
 	--MeasureClock_s <= ClkA;
 
-	MEAS_OUT <= MeasureClock_s;
-	TP0 <= txValid_s;
-	TP3 <= GateReady_s;
-	TP2 <= GatePulse_s;
-	TP1 <= DataValid_s;
-	TP4 <= txValid_s;
-	--LED4 <= GatePulse_s;
-	CLKOUT <= RefClk_s;
-	--TP5 <= ;
-	--LED2 <= test1;
-	--LED3 <= test;
-	uart_tx <= not uart_tx_s;
+	--MEAS_OUT <= MeasureClock_s;
+	TPs(0) <= txValid_s;
+	TPs(1) <= GateReady_s;
+	TPs(2) <= GatePulse_s;
+	TPs(3) <= DataValid_s;
+	TPs(4) <= txValid_s;
+	--CLKOUT <= RefClk_s;
+	--uart_tx <= not uart_tx_s;
 	--tx_data_s <= std_logic_vector(DATOUT_s);
 
     Timing : component GateTime
@@ -216,9 +203,9 @@ begin
 	)
 	port map(
 		CLK => RefClk_s,
+		RESET => wb_rst_i,
 		TimeVal => TimeBase_s,
 		GatePulse => GatePulse_s,
-		--Testsig => TP4,
 		GateReady => GateReady_s,
 		Valid => Valid_s
 	);
@@ -241,7 +228,8 @@ begin
 		GatePulse => GatePulse_s,
 		RefCountVal => RefCountVal_s,
 		DataValid => DataValid_s,
-		RESET => CounterReset_s,
+		RESET => wb_rst_i,
+		CounterReset => CounterReset_s,
 		TEST => open,
 		MeasCountVal => MeasCountVal_s,
 		OpenGate => GateReady_s,
@@ -304,7 +292,7 @@ begin
                 when x"04" => ChannelConfig_s <= wb_dat_i(1 downto 0);
                 when x"08" => TimeBase_s <= wb_dat_i(1 downto 0);
                 when x"0C" => CounterReset_s <= wb_dat_i(0);
-                when x"0F" => Startmeas_s <= wb_dat_i(0);
+                when x"10" => Startmeas_s <= wb_dat_i(0);
                 when others => null;
             end case;
         end if;
@@ -319,10 +307,10 @@ begin
                 when x"24" => wb_dat_o <= RefCountVal_s(23 downto 16);
                 when x"28" => wb_dat_o <= RefCountVal_s(15 downto 8);
                 when x"2C" => wb_dat_o <= RefCountVal_s(7 downto 0);
-                when x"34" => wb_dat_o <= MeasCountVal_s(31 downto 24);
-                when x"38" => wb_dat_o <= MeasCountVal_s(23 downto 16);
-                when x"3C" => wb_dat_o <= MeasCountVal_s(15 downto 8);
-                when x"3F" => wb_dat_o <= MeasCountVal_s(7 downto 0);
+                when x"30" => wb_dat_o <= MeasCountVal_s(31 downto 24);
+                when x"34" => wb_dat_o <= MeasCountVal_s(23 downto 16);
+                when x"38" => wb_dat_o <= MeasCountVal_s(15 downto 8);
+                when x"3C" => wb_dat_o <= MeasCountVal_s(7 downto 0);
                 when others => wb_dat_o <= x"00";
             end case;
         end if;
