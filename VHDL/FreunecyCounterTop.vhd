@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company:
+-- Company: 
 -- Engineer: LJ
---
--- Create Date:    11:38:06 07/21/2017
--- Design Name:
--- Module Name: FrequnecyCounterTop
+-- 
+-- Create Date:    11:38:06 07/21/2017 
+-- Design Name: 
+-- Module Name: FrequnecyCounterTop   
 
 -- Project Name: FrequnecyCounter
--- Target Devices: iCE40
--- Tool versions:
--- Description:
+-- Target Devices: Spartan 6 LX9  
+-- Tool versions: 
+-- Description: 
 --
 -- Revision 0.01 - File Created
 -- Additional Comments:
@@ -34,44 +34,27 @@ use work.zpupkg.all;
 
 entity FrequnecyCounterTop is
 	generic(
-		CLK_OCXO : integer := 1000000
+		CLK_OCXO : integer := 10000000
 	);
-	port (
+	port ( 
 		IntRefClk 		: in STD_LOGIC;
 		ClkA			: in STD_LOGIC;
+		ClkADef         : in STD_LOGIC;
 		ClkB			: in STD_LOGIC;
 		ExtRefClk 		: in STD_LOGIC;
-		--ENABLE_EXT_REF	: in STD_LOGIC;
-		MEAS_OUT		: out STD_LOGIC;
 		LED1			: out STD_LOGIC;
-		TP0				: out STD_LOGIC;
-		TP1				: out STD_LOGIC;
-		TP2				: out STD_LOGIC;
-		TP3				: out STD_LOGIC;
-		TP4				: out STD_LOGIC;
-		TP5				: out STD_LOGIC;
-		CLKOUT			: out STD_LOGIC;
-		--TimeVal			: in STD_LOGIC_VECTOR (1 downto 0);
-		--STARTMEAS		: in STD_LOGIC;
-		ALWAYSON		: out STD_LOGIC;
+        TPs             : out STD_LOGIC_VECTOR(9 downto 0);
 		uart_rx			: in STD_LOGIC;
 		uart_tx			: out STD_LOGIC;
-		--MeasClkSelect   : in STD_LOGIC;
-		--RefClkSelect	: in STD_LOGIC;
 
---ZPU-----------------------------------------------------
-        CLK 	                    : in  STD_LOGIC;
         RESET 	                    : in  STD_LOGIC;
-        out_mem_write_enable        : out std_logic;
-        out_mem_read_enable         : out std_logic;
-        LEDS                        : out std_logic_vector(15 downto 0);
-        --CLK_OUT                     : out std_logic;
-        LED                         : out std_logic;
-        TESTout                     : out std_logic;
 
         --I2C
         sda                          : inout std_logic;
-        scl                          : inout std_logic
+        scl                          : inout std_logic;
+        --GPIO
+        DivSelect                    : out std_logic_vector(1 downto 0);
+        EnFilt                       : out std_logic_vector(1 downto 0)
         );
 end FrequnecyCounterTop;
 
@@ -94,11 +77,6 @@ architecture Behavioral of FrequnecyCounterTop is
     constant wordBytes          : integer := wordSize/8;
     constant minAddrBit         : integer := byteBits;
 
-    constant adr_i2c_master     : std_logic_vector(maxAddrBitIncIO-1 downto 0) := "000000000100000"; --0x"8020" without first 1
-
-
-    constant adr_i2c_master_min    : std_logic_vector(maxAddrBitIncIO-1 downto 0) := "000000000100000"; --0x"8020" without first 1
-     constant adr_i2c_master_max    : std_logic_vector(maxAddrBitIncIO-1 downto 0) := "000000000100100";
 
     component FrequencyCounter is
         generic(
@@ -124,11 +102,7 @@ architecture Behavioral of FrequnecyCounterTop is
 
             CLK             : out std_logic;
             --Debug
-            TP0             : out std_logic;
-            TP1             : out std_logic;
-            TP2             : out std_logic;
-            TP3             : out std_logic;
-            TP4             : out std_logic
+            TPs                 : out std_logic_vector(9 downto 0)
          );
     end component FrequencyCounter;
 
@@ -148,6 +122,7 @@ architecture Behavioral of FrequnecyCounterTop is
         wb_stb_i      : in  std_logic;                    -- Strobe signals / core select signal
         wb_cyc_i      : in  std_logic;                    -- Valid bus cycle input
         wb_ack_o      : out std_logic;                    -- Bus cycle acknowledge output
+        --rx_data       : in std_logic_vector;
         --UART
         rx            : in std_logic;
         tx            : out std_logic
@@ -254,49 +229,16 @@ architecture Behavioral of FrequnecyCounterTop is
     end component I2CTop;
 
 --FreqCount--------------------------------------------------------------------------------------
---	--signal ClkA_s : std_logic;
---	--signal ClkB_s : std_logic;
 	signal CLK_s : std_logic;
---	--signal ExtRef_s : std_logic;
---	signal GatePulse_s : std_logic;
---	signal MeasureClock_s : std_logic;
---	signal RefCountVal_s : std_logic_vector (31 downto 0);
---	signal MeasCountVal_s : std_logic_vector (31 downto 0);
---	signal GateReady_s : std_logic;
---	signal DATOUT_s : std_logic_vector(33 downto 0);
---	signal TimeVal_s : std_logic_vector (1 downto 0);
---	signal Startmeas_s : std_logic;
---	signal Valid_s : std_logic;
---	signal GateEnable_s : std_logic;
---	signal done_s : std_logic;
---	signal debug1_s : std_logic;
---	signal debug2_s : std_logic;
---	signal LedDbg_s : std_logic_vector (7 downto 0);
---	signal test		: std_logic;
---	signal DataValid_s : std_logic;
---	signal CounterReset_s : std_logic;
 	signal rx_busy_s : std_logic;
 	signal tx_busy_s : std_logic;
---	signal DataOutReady : std_logic;
 	signal rx_error_s : std_logic;
---	signal Count2_s : unsigned (19 downto 0);
---    signal reset_s	: std_logic;
 	signal rx_data_s : std_logic_vector(7 downto 0);
 	signal uart_tx_s : std_logic;
---	signal Data8bit_s : std_logic_vector(7 downto 0);
 	signal txValid_s : std_logic;
 	signal TxData_s : std_logic_vector(7 downto 0);
 	signal RxData_s : std_logic_vector(7 downto 0);
---	signal test_s : std_logic;
---	--signal TESTout : std_logic;
---	signal MeasureClocktest_s : std_logic;
---	--signal LEDS : STD_LOGIC_VECTOR (15 downto 0);
---	--signal LED : STD_LOGIC;
---	--signal OpenGate_s : STD_LOGIC;
---	signal ChannelConfig_s : std_logic_vector(1 downto 0);
---	signal CalibOsc_s   : std_logic;
---	signal DataInValid_s : std_logic;
---    signal RxDataOutValid_s : std_logic;
+
 --ZPU---------------------------------------------------------------------------------
     signal mem_read_peripherials_s      : std_logic_vector(wordSize-1 downto 0);
     signal mem_read_mem_s               : std_logic_vector(wordSize-1 downto 0);
@@ -323,9 +265,6 @@ architecture Behavioral of FrequnecyCounterTop is
     signal mem_ack_s                    : std_logic;
     signal mem_busy_i                   : std_logic;
 
-    --signal CLK_s                        : std_logic;
-    --signal Count                        : unsigned(33 downto 0);
-    --signal test                         : std_logic;
     signal LEDS_s                       : std_logic_vector(15 downto 0) := x"FFFF";
     signal LED_s                        : std_logic := '1';
     signal ZpuRxData                    : std_logic_vector(7 downto 0);
@@ -338,22 +277,21 @@ architecture Behavioral of FrequnecyCounterTop is
     signal sda_padoen_o                 : std_logic;
 
     signal dat_i_i2c                    : std_logic_vector(7 downto 0);
-    signal dat_o_i2c                    : std_logic_vector(wordSize-1 downto 0);
---    signal dat_i_uart                   : std_logic_vector(7 downto 0);
+    signal dat_o_i2c                    : std_logic_vector(wordSize-1 downto 0):= x"00000000";
 
     signal stb_i2c : std_logic;
     signal stb_fc : std_logic;
     signal stb_gpio : std_logic;
     signal stb_uart : std_logic;
 
-    signal dat_o_fc : std_logic_vector(wordSize-1 downto 0);
-    signal dat_o_gpio : std_logic_vector(wordSize-1 downto 0);
-    signal dat_o_uart : std_logic_vector(wordSize-1 downto 0);
+    signal dat_o_fc : std_logic_vector(wordSize-1 downto 0):= x"00000000";
+    signal dat_o_gpio : std_logic_vector(wordSize-1 downto 0):= x"00000000";
+    signal dat_o_uart : std_logic_vector(wordSize-1 downto 0) := x"00000000";
 
-    signal ack_o_i2c : std_logic;
-    signal ack_o_fc : std_logic;
-    signal ack_o_gpio : std_logic;
-    signal ack_o_uart :  std_logic;
+    signal ack_o_i2c : std_logic := '0';
+    signal ack_o_fc : std_logic := '0';
+    signal ack_o_gpio : std_logic := '0';
+    signal ack_o_uart :  std_logic := '0';
 
     signal MeasValueValid_s : std_logic;
 
@@ -361,29 +299,8 @@ architecture Behavioral of FrequnecyCounterTop is
 
 
     begin
---	--Startmeas_s <= STARTMEAS;
---	LED1 <= GatePulse_s;
---	ALWAYSON <= '1';
---	--TimeVal_s <= TimeVal;
---	--RefClk_s <= ExtRefClk;
---	--MeasureClock_s <= ClkA;
---
---	MEAS_OUT <= MeasureClock_s;
---	TP0 <= txValid_s;
---	TP3 <= GateReady_s;
---	TP2 <= GatePulse_s;
---	TP1 <= DataValid_s;
---	TP4 <= txValid_s;
---	--LED4 <= GatePulse_s;
---	CLKOUT <= RefClk_s;
---	--TP5 <= ;
---	--LED2 <= test1;
---	--LED3 <= test;
---	uart_tx <= not uart_tx_s;
---	--tx_data_s <= std_logic_vector(DATOUT_s);
-
-    LEDS <= LEDS_s;
-    LED <= LED_s;
+    --LEDS <= LEDS_s;
+    --LED <= LED_s;
 
 
     FreqCounter : component FrequencyCounter
@@ -408,18 +325,14 @@ architecture Behavioral of FrequnecyCounterTop is
         ClkB			            => ClkB,
         ExtRefClk 		            => ExtRefClk,
         CLK                         => CLK_s,
-        TP0                         => TP0,
-        TP1                         => TP1,
-        TP2                         => TP2,
-        TP3                         => TP3,
-        TP4                         => TP4
+        TPs                         => TPs
     );
 
 
 
 
-    out_mem_write_enable <= out_mem_write_enable_s;
-    out_mem_read_enable  <= out_mem_read_enable_s;
+--    out_mem_write_enable <= out_mem_write_enable_s;
+    --out_mem_read_enable  <= out_mem_read_enable_s;
 
 
     my_zpu_core : component ZPUMediumCore
@@ -552,6 +465,7 @@ architecture Behavioral of FrequnecyCounterTop is
             wb_stb_i      => stb_uart,
             wb_cyc_i      => cyc_o,
             wb_ack_o      => ack_o_uart,
+            --rx_data       => rx_data,
             rx            => uart_rx,
             tx            => uart_tx
         );
@@ -566,8 +480,11 @@ architecture Behavioral of FrequnecyCounterTop is
         else
             mem_read_s <= mem_read_mem_s;
         end if;
+
+
             mem_write_peripherials_s <= mem_write_s;
             mem_write_mem_s <= mem_write_s;
+
     end process;
 
 
