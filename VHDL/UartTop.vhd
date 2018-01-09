@@ -46,6 +46,7 @@ entity UartTop is
         wb_cyc_i      : in  std_logic;                    -- Valid bus cycle input
         wb_ack_o      : out std_logic;                    -- Bus cycle acknowledge output
         --wb_inta_o     : out std_logic;                    -- interrupt request output signal
+        --rx_data         : in std_logic_vector(7 downto 0);
 
         --UART
         rx            : in std_logic;
@@ -71,7 +72,7 @@ architecture Behavioral of UartTop is
 
     signal txValid_s    : std_logic;
     signal TxData_s     : std_logic_vector(7 downto 0);
-    signal RxData_s     : std_logic_vector(7 downto 0);
+    signal RxData_s     : std_logic_vector(7 downto 0) := x"00";
     signal rx_busy_s    : std_logic;
     signal tx_busy_s    : std_logic;
     signal rx_error_s   : std_logic;
@@ -102,8 +103,8 @@ begin
             txValid_s <= '0';
         elsif wb_wacc = '1' then
             case wb_adr_i is
-                when x"04" => TxData_s <= wb_dat_i;
-                when x"0C" => txValid_s <= wb_dat_i(0);
+                when x"08" => TxData_s <= wb_dat_i;
+                when x"10" => txValid_s <= wb_dat_i(0);
                 when others => null;
             end case;
         end if;
@@ -113,8 +114,8 @@ begin
     WriteTOWb : process (wb_clk_i,wb_adr_i,RxData_s,tx_busy_s) begin
         if rising_edge(wb_clk_i) then
             case wb_adr_i is
-                when x"00" => wb_dat_o <= RxData_s;
-                when x"08" => wb_dat_o(0) <= tx_busy_s;
+                when x"04" => wb_dat_o <= RxData_s;
+                when x"0C" => wb_dat_o(0) <= tx_busy_s;
                 when others => wb_dat_o <= x"00";
             end case;
         end if;
