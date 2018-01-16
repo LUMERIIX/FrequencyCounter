@@ -10,6 +10,8 @@
 -- Tool versions:
 -- Description:
 --
+-- Dependencies:
+--
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
@@ -53,12 +55,7 @@ entity FrequencyCounter is
 
         CLK             : out std_logic;
 
-        --UART
---        RxData          : out std_logic;
---        TxData          : out std_logic;
-
-        --Debug
-        TPs                 : out std_logic_vector(9 downto 0)
+        TPs             : out std_logic_vector(6 downto 0) := "0000000"
     );
 end entity FrequencyCounter;
 
@@ -88,10 +85,8 @@ architecture Behavioral of FrequencyCounter is
 			CLK 			: in STD_LOGIC;
 			RESET           : in STD_LOGIC;
 			TimeVal			: in STD_LOGIC_VECTOR (1 downto 0);
-			--Testsig			: out STD_LOGIC;
 			GatePulse		: out STD_LOGIC;
 			GateReady		: in STD_LOGIC;
-			--DataValid 		: out STD_LOGIC;
 			Valid			: out STD_LOGIC
 		);
 	end component GateTime;
@@ -117,20 +112,15 @@ architecture Behavioral of FrequencyCounter is
 		ExtRefClk	 	: in STD_LOGIC;
 		MeasureClk		: out STD_LOGIC;
 		ChannelConfig   : in std_logic_vector(1 downto 0);
---		RefClkSelect	: in STD_LOGIC;
---		MeasClkSelect	: in STD_LOGIC;
 		RefClk			: out STD_LOGIC
 	 );
 	 end component;
 
-	--signal ClkA_s : std_logic;
-	--signal ClkB_s : std_logic;
 	signal RefClk_s : std_logic;
-	--signal ExtRef_s : std_logic;
 	signal GatePulse_s : std_logic;
 	signal MeasureClock_s : std_logic;
-	signal RefCountVal_s : std_logic_vector (31 downto 0);
-	signal MeasCountVal_s : std_logic_vector (31 downto 0);
+	signal RefCountVal_s : std_logic_vector (31 downto 0) := x"00000000";
+	signal MeasCountVal_s : std_logic_vector (31 downto 0) := x"00000000";
 	signal GateReady_s : std_logic := '0';
 	signal DATOUT_s : std_logic_vector(33 downto 0);
 	signal TimeBase_s : std_logic_vector (1 downto 0) := "00";
@@ -157,45 +147,29 @@ architecture Behavioral of FrequencyCounter is
 	signal TxData_s : std_logic_vector(7 downto 0);
 	signal RxData_s : std_logic_vector(7 downto 0);
 	signal test_s : std_logic;
-	--signal TESTout : std_logic;
 	signal MeasureClocktest_s : std_logic;
-	--signal LEDS : STD_LOGIC_VECTOR (15 downto 0);
-	--signal LED : STD_LOGIC;
-	--signal OpenGate_s : STD_LOGIC;
 	signal ChannelConfig_s : std_logic_vector(1 downto 0) := "00";
 	signal CalibOsc_s   : std_logic;
 	signal DataInValid_s : std_logic;
     signal RxDataOutValid_s : std_logic;
 
 
-    signal LED1            : std_logic;
-    --signal MEAS_OUT        : std_logic;
-    --signal CLKOUT          : std_logic;
-    --signal uart_tx         : std_logic;
-    --signal ZpuRxData       : std_logic_vector(7 downto 0);
-
+    signal LED1         : std_logic;
     signal iack_o       : std_logic;
     signal wb_wacc      : std_logic;
 
 begin
 
-    --Startmeas_s <= STARTMEAS;
 	LED1 <= GatePulse_s;
-	--ALWAYSON <= '1';
-	--TimeVal_s <= TimeVal;
-	--RefClk_s <= Ref_Clk;
 	CLK <= RefClk_s;
-	--MeasureClock_s <= ClkA;
 
-	--MEAS_OUT <= MeasureClock_s;
 	TPs(0) <= txValid_s;
 	TPs(1) <= GateReady_s;
 	TPs(2) <= GatePulse_s;
-	TPs(3) <= DataValid_s;
-	TPs(4) <= txValid_s;
-	--CLKOUT <= RefClk_s;
-	--uart_tx <= not uart_tx_s;
-	--tx_data_s <= std_logic_vector(DATOUT_s);
+	TPs(3) <= ExtRefClk;
+	TPs(4) <= IntRefClk;
+	TPs(5) <= ClkA;
+	TPs(6) <= ClkB;
 
     Timing : component GateTime
 	generic map(
@@ -258,18 +232,6 @@ begin
 		ClkA            => ClkA,
 		ClkB            => ClkB
 	);
-
---	IntClockGen : process (MeasureClocktest_s) begin
---		if rising_edge(MeasureClocktest_s) then
---				if Count2_s = to_unsigned(16000, Count2_s'length) then --1kHz MeasureClk
---					Count2_s <= to_unsigned(0,Count2_s'length);
---					MeasureClock_s <= not MeasureClock_s;
---				else
---					Count2_s <= Count2_s +1;
---				end if;
---			end if;
---    end process;
-
 
     gen_ack_o : process(wb_clk_i)
     begin
