@@ -47,6 +47,7 @@ entity UartTop is
         wb_ack_o      : out std_logic;                    -- Bus cycle acknowledge output
         --wb_inta_o     : out std_logic;                    -- interrupt request output signal
         --rx_data         : in std_logic_vector(7 downto 0);
+        test            : out std_logic;
 
         --UART
         rx            : in std_logic;
@@ -55,7 +56,7 @@ entity UartTop is
 end UartTop;
 
 architecture Behavioral of UartTop is
-    	component uart is
+    component uart is
 		port(
 			clk			:	IN		STD_LOGIC;										--system clock
 			reset_n		:	IN		STD_LOGIC;										--ascynchronous reset
@@ -71,7 +72,7 @@ architecture Behavioral of UartTop is
 	end component;
 
     signal txValid_s    : std_logic;
-    signal TxData_s     : std_logic_vector(7 downto 0);
+    signal TxData_s     : std_logic_vector(7 downto 0) := x"00";
     signal RxData_s     : std_logic_vector(7 downto 0) := x"00";
     signal rx_busy_s    : std_logic;
     signal tx_busy_s    : std_logic;
@@ -82,7 +83,7 @@ architecture Behavioral of UartTop is
     signal wb_wacc      : std_logic;
 
 begin
-
+    test <= txValid_s;
     reset_s <= not wb_rst_i;
 
     gen_ack_o : process(wb_clk_i)
