@@ -27,7 +27,7 @@ entity Counter is
 		TEST		: out STD_LOGIC;
 		DataValid	: out STD_LOGIC;
 		RESET		: in STD_LOGIC;
-		DATA		: out std_logic_vector (31 downto 0)
+		DATA		: out std_logic_vector (31 downto 0) := x"00000000"
 		);
 end Counter;
 
@@ -46,11 +46,9 @@ begin
 		if rising_edge(CLK) then
 			if ENABLE = '1' then
 				Count_s <= Count_s + 1;
-				--DATA <= std_logic_vector(Count_s);
 				--DataValid_s <= '0';
 			elsif ENABLE = '0' and Count_s > to_unsigned(0,Count_s'length) then
 				DataValid_s <= '1';
-                --Count_s <= (others => '0');
 			end if;
 		end if;
 	else
