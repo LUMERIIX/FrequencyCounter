@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer: LJ
--- 
--- Create Date:    11:38:06 07/21/2017 
--- Design Name: 
--- Module Name: FrequnecyCounterTop   
+--
+-- Create Date:    11:38:06 07/21/2017
+-- Design Name:
+-- Module Name: FrequnecyCounterTop
 
 -- Project Name: FrequnecyCounter
--- Target Devices: Spartan 6 LX9  
--- Tool versions: 
--- Description: 
+-- Target Devices: Spartan 6 LX9
+-- Tool versions:
+-- Description:
 --
 -- Revision 0.01 - File Created
 -- Additional Comments:
@@ -36,7 +36,7 @@ entity FrequnecyCounterTop is
 	generic(
 		CLK_OCXO : integer := 10000000
 	);
-	port ( 
+	port (
 		IntRefClk 		: in STD_LOGIC;
 		ClkA			: in STD_LOGIC;
 		ClkADef         : in STD_LOGIC;
@@ -53,8 +53,8 @@ entity FrequnecyCounterTop is
         sda                          : inout std_logic;
         scl                          : inout std_logic;
         --GPIO
-        DivSelect                    : out std_logic_vector(1 downto 0);
-        EnFilt                       : out std_logic_vector(1 downto 0)
+        DivSelect                    : out std_logic_vector(1 downto 0) := "00";
+        EnFilt                       : out std_logic_vector(1 downto 0) := "00"
         );
 end FrequnecyCounterTop;
 
@@ -102,7 +102,7 @@ architecture Behavioral of FrequnecyCounterTop is
 
             CLK             : out std_logic;
             --Debug
-            TPs                 : out std_logic_vector(9 downto 0)
+            TPs                 : out std_logic_vector(6 downto 0)
          );
     end component FrequencyCounter;
 
@@ -124,6 +124,7 @@ architecture Behavioral of FrequnecyCounterTop is
         wb_ack_o      : out std_logic;                    -- Bus cycle acknowledge output
         --rx_data       : in std_logic_vector;
         --UART
+        test          : out std_logic;
         rx            : in std_logic;
         tx            : out std_logic
     );
@@ -295,12 +296,28 @@ architecture Behavioral of FrequnecyCounterTop is
 
     signal MeasValueValid_s : std_logic;
 
+    signal LEDs         :  std_logic;
+    signal Count        : unsigned (40 downto 0);
+
 
 
 
     begin
     --LEDS <= LEDS_s;
-    --LED <= LED_s;
+    LED1 <= LEDs;
+
+        Blinki : process (CLK_s) begin
+        if rising_edge(CLK_s) then
+            if Count = to_unsigned(10000000,Count'length) then
+                Count <= (others => '0');
+                LEDs <= not LEDs;
+            else
+                Count <= Count + 1;
+            end if;
+        end if;
+    end process;
+
+
 
 
     FreqCounter : component FrequencyCounter
@@ -325,7 +342,7 @@ architecture Behavioral of FrequnecyCounterTop is
         ClkB			            => ClkB,
         ExtRefClk 		            => ExtRefClk,
         CLK                         => CLK_s,
-        TPs                         => TPs
+        TPs                         => TPs(6 downto 0)
     );
 
 
@@ -466,9 +483,11 @@ architecture Behavioral of FrequnecyCounterTop is
             wb_cyc_i      => cyc_o,
             wb_ack_o      => ack_o_uart,
             --rx_data       => rx_data,
+            test            =>TPs(7),
             rx            => uart_rx,
             tx            => uart_tx
         );
+        TPs(9 downto 8) <= "00";
 
     --mem_busy_s <= ((out_mem_write_enable_s or out_mem_read_enable_s) and out_mem_addr_s(out_mem_addr_s'left));
 
@@ -480,11 +499,8 @@ architecture Behavioral of FrequnecyCounterTop is
         else
             mem_read_s <= mem_read_mem_s;
         end if;
-
-
             mem_write_peripherials_s <= mem_write_s;
             mem_write_mem_s <= mem_write_s;
-
     end process;
 
 
