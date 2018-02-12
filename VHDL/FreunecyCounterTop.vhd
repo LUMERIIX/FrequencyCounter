@@ -53,8 +53,8 @@ entity FrequnecyCounterTop is
         sda                          : inout std_logic;
         scl                          : inout std_logic;
         --GPIO
-        DivSelect                    : out std_logic_vector(1 downto 0) := "00";
-        EnFilt                       : out std_logic_vector(1 downto 0) := "00"
+        DivSelect                    : out std_logic_vector(1 downto 0) := "11";
+        EnFilt                       : out std_logic_vector(1 downto 0) := "11"
         );
 end FrequnecyCounterTop;
 
