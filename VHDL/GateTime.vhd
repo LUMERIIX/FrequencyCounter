@@ -93,10 +93,10 @@ begin
 	begin
 	if rising_edge (CLK) then
 		case TimeVal_s is
-		when "00"   => CountLimit_s <= to_unsigned(10000,CountLimit_s'length);--10000;--(CLK_OCXO/1000);  --0.001s
-		when "01"   => CountLimit_s <= to_unsigned(100000,CountLimit_s'length);--100000;--(CLK_OCXO/100);   --0.01s
-		when "10"   => CountLimit_s <= to_unsigned(1000000,CountLimit_s'length);--1000000;--(CLK_OCXO/10);      --0.1s
-		when others => CountLimit_s <= to_unsigned(10000000,CountLimit_s'length);--10000000;--(CLK_OCXO);   --1s
+		when "00"   => CountLimit_s <= to_unsigned(100000,CountLimit_s'length);--10000;--(CLK_OCXO/1000);  --0.01s
+		when "01"   => CountLimit_s <= to_unsigned(1000000,CountLimit_s'length);--100000;--(CLK_OCXO/100);   --0.1s
+		when "10"   => CountLimit_s <= to_unsigned(10000000,CountLimit_s'length);--1000000;--(CLK_OCXO/10);      --1s
+		when others => CountLimit_s <= to_unsigned(100000000,CountLimit_s'length);--10000000;--(CLK_OCXO);   --10s
 		end case;
 	end if;
 	end process;
