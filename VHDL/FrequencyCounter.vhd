@@ -163,11 +163,11 @@ begin
 	LED1 <= GatePulse_s;
 	CLK <= RefClk_s;
 
-	TPs(0) <= txValid_s;
-	TPs(1) <= GateReady_s;
-	TPs(2) <= GatePulse_s;
-	TPs(3) <= ExtRefClk;
-	TPs(4) <= IntRefClk;
+	TPs(0) <= ChannelConfig_s(0);
+	TPs(1) <= ChannelConfig_s(1);
+	TPs(2) <= TimeBase_s(0);
+	TPs(3) <= TimeBase_s(1);
+	TPs(4) <= ExtRefClk;
 	TPs(5) <= ClkA;
 	TPs(6) <= ClkB;
 
