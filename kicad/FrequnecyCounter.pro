@@ -1,11 +1,9 @@
-update=06.11.2017 10:25:25
+update=12.02.2018 14:36:15
 version=1
 last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=kicad-library-master/library;kicad-library-master/template;kicad-components-master;kicad-components-master/FPGA/Xilinx;ConnorWinfield.pretty
@@ -208,3 +206,5 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
+[general]
+version=1

@@ -871,7 +871,7 @@ Wire Wire Line
 Wire Wire Line
 	2375 3725 4200 3725
 Text Notes 6950 3325 0    60   ~ 0
-fg = 2.3405MHz\n
+fg = 4.68 MHz\n
 Text Notes 3975 3550 0    60   ~ 0
 fg = 3.183MHz\n
 $Comp
