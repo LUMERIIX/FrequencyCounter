@@ -1,19 +1,19 @@
-Requirements&Specification --- Frequencycounter
+Requirements&Specification 			-- Frequencycounter
 
--Frequenzbereich: 					1mHz - 1GHz  						//Reduktion des Bereiches auf 500MHz möglich 
--Speisung: 							USB (Typ. B) => 	5V				
--Timebase Anschlussmöglichkeit: 	ext. Referenz 		
--FPGA Clock: 						100 - 300MHz						//evtl. mit PLL von Timebase
--Eingangsspannungsbereich: 			20mVpp - 5Vpp
--Signalübertragung DEVICE-PC: 		UART / JTAG							//FT2232
--DAC mit Speicher:					Kontroll Spannung OCXO				//Aus FOM
+-Frequencyrange: 					1mHz - 1GHz  						//Reduktion des Bereiches auf 500MHz möglich 
+-PowerSupply: 						USB (Typ. B) => 	5V				
+-Timebase options: 					ext. Reference 	 / int. Reference
+-FPGA Clock: 						10MHz					
+-InputVoltageRange: 				20mVpp - 5Vpp
+-Signaltransfer DEVICE-PC: 			UART / JTAG							//FT2232
+-DAC with eeprom:					ControllVoltageOCXO					//Aus FOM
 -Quarz UART/USB: 					8MHz,12MHz							//seperater Quarz zum Betrieb der Schnittstelle
--Frequenzanzeige: 					Frequencycounter GUI
--Timebase intern: 					kalibrierbarer TCXO, OCXO			//10MHz
--Leistungsaufnahme:					max. 2.5W
--Spannungsregler:					3.3V								//Versogrungsspannung FPGA
+-FrequencyDisplay: 					Frequencycounter GUI
+-Timebase intern: 					calibratable TCXO, OCXO				//10MHz
+-Power:								max. 2.5W
+-VoltageRegulator:					3.3V								//PowerSupply FPGA
 
-Eingänge:
-Channel A			=> 1mHz - 50MHz
-Channel B			=> 50MHz - 1GHz
+Inputs:
+Channel A							=> 1mHz - 50MHz
+Channel B							=> 50MHz - 1GHz
 Channel Ext. Ref
