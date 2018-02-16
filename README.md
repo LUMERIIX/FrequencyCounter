@@ -27,9 +27,12 @@ Comming Soon!
 
 ## Software
 ### VHDL
-Comming Soon!
+**VHDL Abstraction**<br><br>
+<img align="middle" width="1200" height="400" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDL_Top_Abstraction.png"><br><br>
+**VHDL FrequencyCounter Abstraction**<br><br>
+<img align="middle" width="1920" height="680" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDl_FreqCounter_Abstraction.png"><br>
 ### C-Code
-Comming Soon!
+The C-Code is the Programm Code for the implemented VHDL CPU [ZPU](https://github.com/zylin/zpu) or a so called [SOC](https://en.wikipedia.org/wiki/System_on_a_chip)(System-on-a-Chip). The C-Code implements the Protocol for the communication over uart and i2c. The ZPU also controls the entire VHDL Components and handles the data. The Code is obviously written in C and is based on a state-machine. The C-Code is converted in a dualported-RAM (VHDL Component) which is located in the VHDL Project and is connected to the Wishbone-Bus of the ZPU. 
 
 ## Get it
 
