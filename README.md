@@ -38,6 +38,13 @@ The UART component isn't self written it is a adjusted version of the [UART comp
 The I2C Master Component is also not self written it's base is from [opencores](https://opencores.org/project,i2c?do=projects&download=i2c). The component works fine and it's a big advantage to have a originally wishbone interface included. I2C is in the FrequnecyCounter used to control the DAC wich provides to control voltage for the oscillators.<br><br>
 **ZPU**<br>
 The [ZPU](https://github.com/zylin/zpu) is a open-source VHDL project from github wich includes a small 32bit CPU. The base ZPU Repo consist of different cores and testbenches but is very confusing. In fact of this I created a fork of the repo and set up a [working base](https://github.com/LUMERIIX/zpu) for the FrequencyCounter Project.<br><br>
+**FrequencyCounter**<br>
+The FrequencyCounter VHDL Code is the main part which counts our signals. The FrequencyCounter includes a ChannelSelctor which connect the desired Channels to the Counter itself. Furthermore the component includes a GateTimeGenerator which open a Countergate for a selected duration of time. The Signals are counted simultaneously with two identical VHDL counters. Each counter counts the amout of signal periods in this GateTime. Through the knowledge of the constant reference and the countervalue of the Reference Clock we can calculate the frequency of the unknown signal. This kind of Counter is called [Recirprocal Counter](https://en.wikipedia.org/wiki/Frequency_counter).<br><br>
+**Procedure & Calculation**<br><br>
+<img align="right"  width="400" height="300" tittle="Procedure" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/ReciprocCounter.PNG"><br><br>
+<img align="left"  width="400" height="150" tittle="Calculation" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/ReciprocCounter_Calc.PNG">
+<br><br><br><br><br><br><br><br><br><br>
+
 
 **VHDL Abstraction**<br><br>
 <img align="middle" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDL_Top_Abstraction.png"><br><br>
@@ -46,7 +53,7 @@ The [ZPU](https://github.com/zylin/zpu) is a open-source VHDL project from githu
 ### C-Code
 The C-Code is the Programm Code for the implemented VHDL CPU [ZPU](https://github.com/zylin/zpu) or a so called [SOC](https://en.wikipedia.org/wiki/System_on_a_chip)(System-on-a-Chip). The C-Code implements the Protocol for the communication over uart and i2c. The ZPU also controls the entire VHDL Components and handles the data. The Code is obviously written in C and is based on a state-machine. The C-Code is converted in a dualported-RAM (VHDL Component) which is located in the VHDL Project and is connected to the Wishbone-Bus of the ZPU. 
 
-## Get it
+## Download & Installation
 **It's recommended to use a Linux Host-PC the project is tested and developt on Fedora 27 so I recommend to install a Fedora VM in VMWare Worksation**
 
 ```
