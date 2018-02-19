@@ -27,6 +27,13 @@ Comming Soon!
 
 ## Software
 ### VHDL
+**UART**<br>
+The UART component isn't self written it is a adjusted version of the [UART component of Scott Larson](https://eewiki.net/pages/viewpage.action?pageId=59507062) of the eewiki. The component was extended by a Wishbone Interface to fit the projects architecture. The UART interface is used for the communication with the host-pc.<br><br>
+**I2C**<br>
+The I2C Master Component is also not self written it's base is from [opencores](https://opencores.org/project,i2c?do=projects&download=i2c). The component works fine and it's a big advantage to have a originally wishbone interface included. I2C is in the FrequnecyCounter used to control the DAC wich provides to control voltage for the oscillators.<br><br>
+**ZPU**<br>
+The [ZPU](https://github.com/zylin/zpu) is a open-source VHDL project from github wich includes a small 32bit CPU. The base ZPU Repo consist of different cores and testbenches but is very confusing. In fact of this I created a fork of the repo and set up a [working base](https://github.com/LUMERIIX/zpu) for the FrequencyCounter Project.<br><br>
+
 **VHDL Abstraction**<br><br>
 <img align="middle" width="1200" height="400" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDL_Top_Abstraction.png"><br><br>
 **VHDL FrequencyCounter Abstraction**<br><br>
@@ -79,6 +86,15 @@ Download the FrequencyCounter Repo:
 ```
 git clone https://github.com/LUMERIIX/FrequencyCounter
 cd FrequencyCounter 
+```
+***Optional*** Download the fork of the ZPU Repo to have all source files 
+```
+cd
+git clone https://github.com/LUMERIIX/zpu
+```
+The source files are located under
+```
+cd zpu/zpu/hdl/zpu4
 ```
 Next Install openocd for flashing the bitstream:
 ```
