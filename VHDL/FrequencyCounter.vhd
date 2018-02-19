@@ -55,7 +55,7 @@ entity FrequencyCounter is
 
         CLK             : out std_logic;
 
-        TPs             : out std_logic_vector(6 downto 0) := "0000000"
+        TPs             : inout std_logic_vector(7 downto 0) := "00000000"
     );
 end entity FrequencyCounter;
 

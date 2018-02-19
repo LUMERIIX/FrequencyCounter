@@ -43,12 +43,12 @@ entity FrequnecyCounterTop is
 		ClkB			: in STD_LOGIC;
 		ExtRefClk 		: in STD_LOGIC;
 		LED1			: out STD_LOGIC;
-        TPs             : out STD_LOGIC_VECTOR(9 downto 0);
+        TPs             : inout STD_LOGIC_VECTOR(9 downto 0);
 		uart_rx			: in STD_LOGIC;
 		uart_tx			: out STD_LOGIC;
 
         RESET 	                    : in  STD_LOGIC;
-
+        Test                        : out std_logic;
         --I2C
         sda                          : inout std_logic;
         scl                          : inout std_logic;
@@ -102,7 +102,7 @@ architecture Behavioral of FrequnecyCounterTop is
 
             CLK             : out std_logic;
             --Debug
-            TPs                 : out std_logic_vector(6 downto 0)
+            TPs                 : inout std_logic_vector(7 downto 0)
          );
     end component FrequencyCounter;
 
@@ -298,6 +298,8 @@ architecture Behavioral of FrequnecyCounterTop is
 
     signal LEDs         :  std_logic;
     signal Count        : unsigned (40 downto 0);
+    signal Test_s       : std_logic;
+    signal wb_wacc      : std_logic;
 
 
 
@@ -342,7 +344,7 @@ architecture Behavioral of FrequnecyCounterTop is
         ClkB			            => ClkB,
         ExtRefClk 		            => ExtRefClk,
         CLK                         => CLK_s,
-        TPs                         => TPs(6 downto 0)
+        TPs                         => TPs(7 downto 0)
     );
 
 
@@ -442,6 +444,21 @@ architecture Behavioral of FrequnecyCounterTop is
         end case;
     end process;
 
+    gpio_interface : process(CLK_s,adr_o,dat_i_i2c) begin
+    wb_wacc <= cyc_o and stb_gpio and we_o;
+    if rising_edge(CLK_s) then
+        if(RESET = '1') then
+            Test_s <= '0';
+        elsif wb_wacc = '1' then
+            case adr_o(7 downto 0) is
+                when x"30" => TPs(8) <= dat_i_i2c(0);
+                when others => null;
+            end case;
+        end if;
+    end if;
+    --TPs <= (TPs or (Test_s sll 7));
+    end process;
+
         i2c_slave : component I2CTop
         generic map(
             ARST_LVL        => '0'
@@ -483,11 +500,11 @@ architecture Behavioral of FrequnecyCounterTop is
             wb_cyc_i      => cyc_o,
             wb_ack_o      => ack_o_uart,
             --rx_data       => rx_data,
-            test            =>TPs(7),
+            test            =>open,--TPs(7),
             rx            => uart_rx,
             tx            => uart_tx
         );
-        TPs(9 downto 8) <= "00";
+        TPs(9) <= '0';
 
     --mem_busy_s <= ((out_mem_write_enable_s or out_mem_read_enable_s) and out_mem_addr_s(out_mem_addr_s'left));
 
