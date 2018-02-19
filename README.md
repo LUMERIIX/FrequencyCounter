@@ -20,10 +20,10 @@ The input circuit of **CHA** is realized with an voltage limiter and a HP-Filter
 The most complex incput circuit is the one of the **external reference** (Ext.Ref). The circuit is out of the LTC6957 Datasheet and is often used for reference clocks. The transformator at the inlet make it impossible to use this circuit for both other channels of the FrequencyCounter (frequnecy reasons).<br>
 **Channel B** is simpler than the other input ciruits. After the inlet it follows a voltage limiter and a very-fast comparator for edge detecting.<br>
 ### Communication
-Comming Soon!
+<img align="middle"  tittle="CommunicationAbstraction" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Communication_Abstraction.png"><br>
 
 ### Hardware Overview:<br>
-<img align="middle" width="1200" height="400" tittle="HardwareBlockDiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Hardware_BlockDiagramm.jpg"><br>
+<img align="middle" tittle="HardwareBlockDiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Hardware_BlockDiagramm.jpg"><br>
 
 ## Software
 ### VHDL
@@ -35,9 +35,9 @@ The I2C Master Component is also not self written it's base is from [opencores](
 The [ZPU](https://github.com/zylin/zpu) is a open-source VHDL project from github wich includes a small 32bit CPU. The base ZPU Repo consist of different cores and testbenches but is very confusing. In fact of this I created a fork of the repo and set up a [working base](https://github.com/LUMERIIX/zpu) for the FrequencyCounter Project.<br><br>
 
 **VHDL Abstraction**<br><br>
-<img align="middle" width="1200" height="400" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDL_Top_Abstraction.png"><br><br>
+<img align="middle" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDL_Top_Abstraction.png"><br><br>
 **VHDL FrequencyCounter Abstraction**<br><br>
-<img align="middle" width="1920" height="680" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDl_FreqCounter_Abstraction.png"><br>
+<img align="middle" tittle="VHDL_Blockdiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/VHDl_FreqCounter_Abstraction.png"><br>
 ### C-Code
 The C-Code is the Programm Code for the implemented VHDL CPU [ZPU](https://github.com/zylin/zpu) or a so called [SOC](https://en.wikipedia.org/wiki/System_on_a_chip)(System-on-a-Chip). The C-Code implements the Protocol for the communication over uart and i2c. The ZPU also controls the entire VHDL Components and handles the data. The Code is obviously written in C and is based on a state-machine. The C-Code is converted in a dualported-RAM (VHDL Component) which is located in the VHDL Project and is connected to the Wishbone-Bus of the ZPU. 
 
