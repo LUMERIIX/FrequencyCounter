@@ -20,8 +20,12 @@ The input circuit of **CHA** is realized with an voltage limiter and a HP-Filter
 The most complex incput circuit is the one of the **external reference** (Ext.Ref). The circuit is out of the LTC6957 Datasheet and is often used for reference clocks. The transformator at the inlet make it impossible to use this circuit for both other channels of the FrequencyCounter (frequnecy reasons).<br>
 **Channel B** is simpler than the other input ciruits. After the inlet it follows a voltage limiter and a very-fast comparator for edge detecting.<br>
 ### Communication
-The Communication of the Device is over USB/UART through this its possible to have only one cable for programming, powersupply and also communication. On the PCB of the Counter a FTDI (FT2232) is mounted. Through this chip it's possible to programm the FPGA with JTAG and also have a USART Bus to the FPGA for the communication and the data. 
-<img align="middle"  tittle="CommunicationAbstraction" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Communication_Abstraction.png"><br>
+The Communication of the Device is over USB/UART through this its possible to have only one cable for programming, powersupply and also communication. On the PCB of the Counter a FTDI (FT2232) is mounted. Through this chip it's possible to programm the FPGA with JTAG and also have a USART Bus to the FPGA for the communication and the data. The Protocol which is used for the controlling consits only out of one command-byte which controls the hole device. The Commands you see in the Command Overview.<br>
+**Command Overview**<br><br>
+<img align="center"  tittle="Commands" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Comunication_Commands.png"><br><br>
+**Communication Overview**<br><br>
+<img align="center"  tittle="CommunicationAbstraction" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Communication_Abstraction.png"><br>
+
 
 ### Hardware Overview:<br>
 <img align="middle" tittle="HardwareBlockDiagramm" src="https://github.com/LUMERIIX/FrequencyCounter/blob/master/Documentation/Images/Hardware_BlockDiagramm.jpg"><br>
@@ -89,7 +93,7 @@ Download the FrequencyCounter Repo:
 git clone https://github.com/LUMERIIX/FrequencyCounter
 cd FrequencyCounter 
 ```
-***Optional*** Download the fork of the ZPU Repo to have all source files 
+**Optional** Download the fork of the ZPU Repo to have all source files 
 ```
 cd
 git clone https://github.com/LUMERIIX/zpu
