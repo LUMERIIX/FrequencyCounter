@@ -133,7 +133,7 @@ cp openocd ~/openocd-bin
 Add the Interface Config file for the FT2232
 ```
 cd 
-cp FrequnecyCounter/openocd/ft2232-jtag.cfg openocd-bin/interface/ftdi
+cp FrequnecyCounter/FTDI/ft2232-jtag.cfg openocd-bin/interface/ftdi
 ```
 Download [SigrokLcd](https://github.com/LUMERIIX/SigrokLcd) or [SigrokCLI](https://sigrok.org/wiki/Linux)
 
