@@ -42,6 +42,7 @@ The [ZPU](https://github.com/zylin/zpu) is a open-source VHDL project from githu
 The C-Code is the Programm Code for the implemented VHDL CPU [ZPU](https://github.com/zylin/zpu) or a so called [SOC](https://en.wikipedia.org/wiki/System_on_a_chip)(System-on-a-Chip). The C-Code implements the Protocol for the communication over uart and i2c. The ZPU also controls the entire VHDL Components and handles the data. The Code is obviously written in C and is based on a state-machine. The C-Code is converted in a dualported-RAM (VHDL Component) which is located in the VHDL Project and is connected to the Wishbone-Bus of the ZPU. 
 
 ## Get it
+**It's recommended to use a Linux Host-PC the project is tested and developt on Fedora 27 so I recommend to install a Fedora VM in VMWare Worksation**
 
 ```
 cd
@@ -124,10 +125,50 @@ cp FrequnecyCounter/openocd/ft2232-jtag.cfg openocd-bin/interface/ftdi
 ```
 Download [SigrokLcd](https://github.com/LUMERIIX/SigrokLcd) or [SigrokCLI](https://sigrok.org/wiki/Linux)
 
+### Set up the FTDI Chip (FT2232d)
+First download [FT_PROG](http://www.ftdichip.com/Support/Utilities.htm#FT_PROG) and install it on your Host-pc.<br>
+Open FT_PROG and Load FrequencyCounter.xml Template from directrory /FrequnceyCounter/Documentation/FrequencyCounter_Template.xml<br>
+Connect your FrequencyCounter via USB to the Host-PC and power it!<br>
+**Check first the Voltages of the Powersupply on the PCB to make sure the circuit is working correctly!**<br>
+Scan for Devices (Devices --> Scan&Parse)<br>
+A Device with Chip Type: FT2232D should be listed in the Device Tree on the left.<br>
+Program Template on FTDI Chip (Devices --> Program)<br>
+Now your FTDI Chip should be set-up correctly
+Else take a look in the [FT_PROG manual](http://www.ftdichip.com/Support/Documents/AppNotes/AN_124_User_Guide_For_FT_PROG.pdf)
+
 
 ## How to use it
 The actual bitstream you find under /bitstream:
 ```
 cd
-cd /FrequnecyCounter/bitstream
+cd FrequencyCounter/bitstream
 ```
+To flash the bitstream move to the openocd directory
+```
+cd
+cd openocd
+mdkdir bitstream
+cp ../FrequencyCounter/bitstream/frequencycountertop.bit bitstream
+```
+Flash Command
+```
+openocd -f interface/ftdi/ft2232-jtag.cfg -f cpld/xilinx-xc6s.cfg -c "init; xc6s_program xc6s.tap; pld load 0 bitstream/frequnecycountertop.bit; exit"
+```
+**If a error is thrown try it as root.
+And change write permission of the USB port where the Hardware is connected and try again!**
+
+Open SigrokLcd and try to get some Data
+```
+cd
+cd SigrokLcd/bin/Release
+./SigrokLcd
+```
+If the GUI doesn't exit and you can finish the configuration of the connection in SigrokLcd you handled the bigest step. 
+The Preset for the ChannelSelect is on CHA so you should receive a Frequency of quite a feq MHz. This Frequency exists through the output voltage swing of the frequency divider.<br>
+**Congrats it seems that your DIY FrequencyCounter works!**
+
+### Contact
+If you have a Problem, a improvment or need Information don't hesitate to contact me.<br>
+email: lukas.jenni@hotmail.de
+
+
