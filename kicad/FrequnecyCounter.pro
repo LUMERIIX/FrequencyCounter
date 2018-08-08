@@ -1,4 +1,4 @@
-update=12.02.2018 14:36:15
+update=08.08.2018 12:39:59
 version=1
 last_client=kicad
 [cvpcb]
@@ -187,14 +187,26 @@ LibName176=library-kicad-master/trs_jack
 LibName177=library-kicad-master/usb3_esd_son50-10
 LibName178=library-kicad-master/usb3_micro_ab
 LibName179=library-kicad-master/wolfson
+[general]
+version=1
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=PDFs/
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
 [pcbnew]
 version=1
 PageLayoutDescrFile=
 LastNetListRead=FrequnecyCounter.net
 PadDrill=0
 PadDrillOvalY=0
-PadSizeH=1.2
-PadSizeV=0.75
+PadSizeH=1.725
+PadSizeV=1.725
 PcbTextSizeV=1.5
 PcbTextSizeH=1.5
 PcbTextThickness=0.3
@@ -203,8 +215,6 @@ ModuleTextSizeH=1
 ModuleTextSizeThickness=0.15
 SolderMaskClearance=0.2
 SolderMaskMinWidth=0
-DrawSegmentWidth=0.2
+DrawSegmentWidth=1
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
-[general]
-version=1
