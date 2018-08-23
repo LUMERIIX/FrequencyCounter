@@ -55,7 +55,7 @@ entity FrequencyCounter is
 
         CLK             : out std_logic;
 
-        TPs             : inout std_logic_vector(7 downto 0) := "00000000"
+        TPs             : inout std_logic_vector(9 downto 0) := "00000000"
     );
 end entity FrequencyCounter;
 
@@ -170,6 +170,9 @@ begin
 	TPs(4) <= ExtRefClk;
 	TPs(5) <= ClkA;
 	TPs(6) <= ClkB;
+	TPs(7) <= GatePulse_s;
+    TPs(8) <= RefClk_s;
+    TPs(9) <= MeasureClocktest_s;
 
     Timing : component GateTime
 	generic map(

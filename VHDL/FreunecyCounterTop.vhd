@@ -39,7 +39,6 @@ entity FrequnecyCounterTop is
 	port (
 		IntRefClk 		: in STD_LOGIC;
 		ClkA			: in STD_LOGIC;
-		ClkADef         : in STD_LOGIC;
 		ClkB			: in STD_LOGIC;
 		ExtRefClk 		: in STD_LOGIC;
 		LED1			: out STD_LOGIC;
@@ -102,7 +101,7 @@ architecture Behavioral of FrequnecyCounterTop is
 
             CLK             : out std_logic;
             --Debug
-            TPs                 : inout std_logic_vector(7 downto 0)
+            TPs                 : inout std_logic_vector(9 downto 0)
          );
     end component FrequencyCounter;
 
@@ -344,7 +343,7 @@ architecture Behavioral of FrequnecyCounterTop is
         ClkB			            => ClkB,
         ExtRefClk 		            => ExtRefClk,
         CLK                         => CLK_s,
-        TPs                         => TPs(7 downto 0)
+        TPs                         => TPs(9 downto 0)
     );
 
 
@@ -444,20 +443,20 @@ architecture Behavioral of FrequnecyCounterTop is
         end case;
     end process;
 
-    gpio_interface : process(CLK_s,adr_o,dat_i_i2c) begin
-    wb_wacc <= cyc_o and stb_gpio and we_o;
-    if rising_edge(CLK_s) then
-        if(RESET = '1') then
-            Test_s <= '0';
-        elsif wb_wacc = '1' then
-            case adr_o(7 downto 0) is
-                when x"30" => TPs(8) <= dat_i_i2c(0);
-                when others => null;
-            end case;
-        end if;
-    end if;
+--    gpio_interface : process(CLK_s,adr_o,dat_i_i2c) begin
+--    wb_wacc <= cyc_o and stb_gpio and we_o;
+--    if rising_edge(CLK_s) then
+--        if(RESET = '1') then
+--            Test_s <= '0';
+--        elsif wb_wacc = '1' then
+--            case adr_o(7 downto 0) is
+--                when x"30" => TPs(8) <= dat_i_i2c(0);
+--                when others => null;
+--            end case;
+--        end if;
+--    end if;
     --TPs <= (TPs or (Test_s sll 7));
-    end process;
+--    end process;
 
         i2c_slave : component I2CTop
         generic map(
@@ -504,7 +503,7 @@ architecture Behavioral of FrequnecyCounterTop is
             rx            => uart_rx,
             tx            => uart_tx
         );
-        TPs(9) <= '0';
+        --TPs(9) <= '0';
 
     --mem_busy_s <= ((out_mem_write_enable_s or out_mem_read_enable_s) and out_mem_addr_s(out_mem_addr_s'left));
 
