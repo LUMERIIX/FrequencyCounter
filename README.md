@@ -69,6 +69,7 @@ Save and Close gedit.<br>
 Install dependencies:
 ```
 sudo dnf install gcc-gfortran apr-devel apr-util-devel octave*
+sudo dnf install gcc-c++
 sudo dnf update
 sudo dnf upgrade
 sudo svn git cppunit-devel rabbitvcs*
@@ -114,7 +115,7 @@ Next Install openocd for flashing the bitstream:
 sudo dnf install git libtool autoconf texinfo libusb-dev
 sudo dnf install libftdi
 cd
-git clone git://git.code.sf.net/p/openocd/code
+git clone git://git.code.sf.net/p/openocd/code openocd
 cd ~/openocd
 ./bootstrap
 ./configure --enable-maintainer-mode --disable-werror --enable-ftdi
