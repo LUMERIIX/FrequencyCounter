@@ -95,6 +95,7 @@ cd libsigrok_FreqCount
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ ./configure 
 make -j4
 sudo PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ PYTHONPATH=/usr/local/lib64/python2.7/site-packages/ make install
+sudo ldconfig /usr/local/lib
 ```
 Download the FrequencyCounter Repo:
 ```
